@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>운명연구소 — 정통 사주팔자 심층 해석</title>
+<meta name="description" content="생년월일시로 사주팔자 원국·오행·십성·대운·신살까지 무료 심층 해석. 결혼 시기, 재물운, 학업운, 직업 적성을 정통 명리학 기반으로 분석합니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="stars" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="logo" href="#top">운명<span>연구소</span></a>
+    <nav class="topnav">
+      <a href="#reading">사주 보기</a>
+      <a href="#about">해석 원리</a>
+      <a href="#faq">자주 묻는 질문</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ═══════════ HERO ═══════════ -->
+  <section class="hero">
+    <p class="hero-eyebrow">正統 命理學 · 만세력 기반 심층 분석</p>
+    <h1>당신의 여덟 글자에<br>새겨진 <em>운명의 지도</em></h1>
+    <p class="hero-sub">태어난 년·월·일·시 — 여덟 글자의 음양오행을 풀어<br class="pc-only">성격 · 재물 · 결혼 시기 · 학업 · 대운의 흐름까지 읽어드립니다.</p>
+    <a href="#reading" class="btn-gold btn-lg">내 사주 풀어보기</a>
+    <div class="hero-badges">
+      <span>절기(節氣) 기준 만세력 계산</span>
+      <span>십성 · 지장간 · 대운 · 신살</span>
+      <span>결혼 시기 후보 연도 분석</span>
+    </div>
+  </section>
+
+  <!-- ═══════════ INPUT ═══════════ -->
+  <section class="panel" id="reading">
+    <h2 class="sec-title"><span>命</span>사주 정보 입력</h2>
+    <p class="sec-desc">양력 생년월일을 입력해 주세요. 음력만 아시는 경우, 네이버 달력 등에서 양력으로 변환 후 입력하시면 정확합니다.</p>
+
+    <form id="sajuForm" class="saju-form" autocomplete="off">
+      <div class="form-row">
+        <div class="field">
+          <label for="inName">이름 <small>(선택)</small></label>
+          <input type="text" id="inName" placeholder="홍길동" maxlength="12">
+        </div>
+        <div class="field">
+          <label>성별</label>
+          <div class="seg" role="radiogroup">
+            <label><input type="radio" name="gender" value="M" checked><span>남자</span></label>
+            <label><input type="radio" name="gender" value="F"><span>여자</span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="inYear">태어난 해 (양력)</label>
+          <select id="inYear"></select>
+        </div>
+        <div class="field">
+          <label for="inMonth">월</label>
+          <select id="inMonth"></select>
+        </div>
+        <div class="field">
+          <label for="inDay">일</label>
+          <select id="inDay"></select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="inHour">태어난 시간</label>
+          <select id="inHour"></select>
+        </div>
+        <div class="field">
+          <label for="inMin">분</label>
+          <select id="inMin"></select>
+        </div>
+        <div class="field field-check">
+          <label class="chk"><input type="checkbox" id="unknownTime"> <span>태어난 시간을 몰라요</span></label>
+          <label class="chk"><input type="checkbox" id="trueSolar" checked> <span>진태양시 보정 (−30분)</span>
+            <i class="tip" data-tip="한국 표준시(동경 135도)와 실제 태양 위치(약 127.5도)의 차이를 보정합니다. 대부분의 전문 역술원이 적용하는 방식입니다.">?</i>
+          </label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-gold btn-lg btn-block">사주팔자 심층 해석 시작</button>
+    </form>
+  </section>
+
+  <!-- ═══════════ RESULT ═══════════ -->
+  <section id="result" class="result hidden"></section>
+
+  <!-- ═══════════ ABOUT ═══════════ -->
+  <section class="panel" id="about">
+    <h2 class="sec-title"><span>理</span>어떻게 해석하나요</h2>
+    <div class="about-grid">
+      <div class="about-card"><h3>① 만세력 산출</h3><p>입력하신 생년월일시를 절기(節氣) 기준으로 환산해 년주·월주·일주·시주, 여덟 글자를 세웁니다. 입춘 전 출생은 전년도 간지로, 월은 절입일 기준으로 계산합니다.</p></div>
+      <div class="about-card"><h3>② 오행·십성 분석</h3><p>여덟 글자와 지장간의 목·화·토·금·수 분포를 계량하고, 일간(나)을 기준으로 비겁·식상·재성·관성·인성의 십성 구조를 읽어 성격과 재능, 관계의 패턴을 해석합니다.</p></div>
+      <div class="about-card"><h3>③ 대운·세운 흐름</h3><p>10년 단위 대운의 방향(순행·역행)과 대운수를 계산해 인생의 큰 흐름을, 연 단위 세운으로 가까운 몇 년의 기운을 짚습니다. 결혼·시험·이직 같은 시기 판단의 근거가 됩니다.</p></div>
+      <div class="about-card"><h3>④ 신살 참고</h3><p>도화살·역마살·화개살·천을귀인 등 전통 신살을 참고 지표로 덧붙입니다. 신살은 절대 규칙이 아니라 원국 전체 맥락 안에서 읽는 보조 신호입니다.</p></div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FAQ ═══════════ -->
+  <section class="panel" id="faq">
+    <h2 class="sec-title"><span>問</span>자주 묻는 질문</h2>
+    <details><summary>결혼 시기는 어떻게 계산하나요?</summary><p>배우자를 뜻하는 십성(남자는 재성, 여자는 관성)이 세운·대운에서 들어오는 해, 배우자궁(일지)과 합(合)이 되는 해, 도화 기운이 강해지는 해를 종합해 "인연 기운이 강한 후보 연도"를 제시합니다. 확정이 아니라 확률적 흐름입니다.</p></details>
+    <details><summary>태어난 시간을 모르면 못 보나요?</summary><p>볼 수 있습니다. 시주를 제외한 여섯 글자(삼주)로 해석하며, 시주가 담당하는 말년운·자녀운 항목만 생략됩니다. 성격·재물·결혼·대운 등 핵심 해석은 그대로 제공합니다.</p></details>
+    <details><summary>진태양시 보정이 뭔가요?</summary><p>한국 표준시는 일본 아카시(동경 135도) 기준이라 실제 한국 하늘의 태양보다 약 30분 빠릅니다. 시주가 시간 경계(홀수 시각) 부근이면 결과가 달라질 수 있어, 전문 역술원처럼 −30분 보정을 기본 적용합니다.</p></details>
+    <details><summary>절입일(절기 경계) 출생인데 정확한가요?</summary><p>절기 날짜는 천문 근사식으로 계산하며 대부분 정확하지만, 절입 당일의 '시각' 단위 경계에 걸친 출생은 드물게 월주가 달라질 수 있습니다. 이 경우 전문 만세력 대조를 권장하며, 결과 화면에 경계 여부를 표시해 드립니다.</p></details>
+    <details><summary>이 해석을 얼마나 믿어야 하나요?</summary><p>사주명리는 수천 년 누적된 통계적 인간 이해의 틀이지, 미래를 확정하는 예언이 아닙니다. 본 서비스는 자기 이해와 시기 판단의 참고 자료이며, 중요한 인생 결정은 반드시 본인의 판단으로 하시기 바랍니다.</p></details>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <p><strong>운명연구소</strong> — 정통 명리학 기반 사주 해석</p>
+  <p class="foot-dim">본 해석은 명리학 이론에 기반한 참고용 콘텐츠이며 오락·자기이해 목적으로 제공됩니다. 의료·법률·투자 판단의 근거가 될 수 없습니다.</p>
+</footer>
+
+<script src="js/engine.js"></script>
+<script src="js/texts.js"></script>
+<script src="js/texts2.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

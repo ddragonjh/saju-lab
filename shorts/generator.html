@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>운명연구소 — 숏츠 영상 자동 생성기</title>
+<style>
+:root{--bg:#0b0d17;--gold:#c9a86a;--goldB:#e8cf9a;--ink:#e9e6dd;--dim:#9a97a8}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:'Noto Sans KR',sans-serif;padding:30px 20px;line-height:1.7}
+.wrap{max-width:920px;margin:0 auto}
+h1{font-family:'Noto Serif KR',serif;color:var(--goldB);font-size:1.5rem;margin-bottom:6px}
+.sub{color:var(--dim);font-size:.9rem;margin-bottom:24px}
+.grid{display:grid;grid-template-columns:340px 1fr;gap:24px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+.panel{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,106,.25);border-radius:16px;padding:20px}
+label{display:block;font-size:.85rem;color:var(--dim);margin:14px 0 6px}
+select,textarea{width:100%;background:#151829;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px;color:var(--ink);font-size:.95rem;font-family:inherit}
+textarea{min-height:150px;resize:vertical}
+button{background:linear-gradient(135deg,#d9b877,#b08d4f);color:#171204;font-weight:700;border:none;border-radius:999px;padding:13px 26px;font-size:1rem;cursor:pointer;margin-top:16px;width:100%}
+button:disabled{opacity:.45;cursor:wait}
+button.ghost{background:transparent;border:1px solid rgba(201,168,106,.4);color:var(--goldB);font-weight:400}
+canvas{width:100%;max-width:300px;border-radius:14px;border:1px solid rgba(255,255,255,.12);display:block;margin:0 auto}
+.status{font-size:.85rem;color:var(--gold);margin-top:12px;min-height:1.3em;text-align:center}
+.dl{display:none;text-align:center;margin-top:14px}
+.dl a{color:var(--goldB);font-weight:700;font-size:1.05rem}
+.note{font-size:.78rem;color:var(--dim);margin-top:16px;border-top:1px solid rgba(255,255,255,.08);padding-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>命 운명연구소 — 숏츠 영상 자동 생성기</h1>
+  <p class="sub">대본을 선택하고 [영상 생성]을 누르면 1080×1920 숏츠 영상이 자동 렌더링됩니다. 100% 무료 · 무제한 · 워터마크 없음 · 내 PC에서만 동작.</p>
+
+  <div class="grid">
+    <div class="panel">
+      <label>에피소드 선택</label>
+      <select id="epSel"></select>
+      <label>대본 (수정 가능 — 한 줄 = 한 장면)</label>
+      <textarea id="scriptBox"></textarea>
+      <label>마지막 CTA 문구</label>
+      <textarea id="ctaBox" style="min-height:52px"></textarea>
+      <button id="genBtn">🎬 영상 생성 (약 40~60초)</button>
+      <button class="ghost" id="previewTts">🔊 내레이션 미리듣기 (한국어 TTS)</button>
+      <div class="status" id="status"></div>
+      <div class="dl" id="dl"><a id="dlLink" download>⬇ 영상 다운로드 (.webm)</a></div>
+      <p class="note">
+        · <b>업로드</b>: 유튜브 쇼츠는 webm 바로 업로드 가능. 인스타·틱톡은 CapCut에서 열어 mp4로 내보내면 됩니다(10초).<br>
+        · <b>음악</b>: 각 플랫폼 업로드 화면에서 인기 BGM을 입히세요 — 저작권 안전 + 알고리즘 가산점.<br>
+        · <b>내레이션</b>: TTS 음성까지 원하면 무료 Vrew(vrew.ai)에 이 대본을 붙여넣으면 자동 완성됩니다.
+      </p>
+    </div>
+    <div class="panel">
+      <canvas id="cv" width="1080" height="1920"></canvas>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── 대본 데이터 (01-숏츠대본-10편.md와 동일) ──
+const EPISODES = [
+ {t:"EP.01 결혼, 대체 언제 하나요?", hook:"\"결혼 언제 해요?\"\n역술가가 제일 많이 듣는 질문.\n답은 사주에 이미 있습니다.",
+  lines:["남자는 재성(財), 여자는 관성(官)이\n배우자의 별.","이 별이 세운으로 들어오는 해,\n인연의 문이 열립니다.","여기에 배우자궁과 합(合)이 되는 해가\n겹치면? 그 해가 혼담 나오는 해.","도화까지 같이 들어오면\n소개팅 → 결혼 직행 코스입니다."],
+  cta:"내 인연의 해는 언제일까?\n프로필 링크에서 무료로 확인하세요"},
+ {t:"EP.02 이혼하기 쉬운 사주?", hook:"\"이런 사주는 이혼합니다\"\n반은 맞고 반은 틀린 말.",
+  lines:["명리학이 말하는 위험 신호는 세 가지.","하나, 배우자궁이 충(沖) 맞은 사주\n— 부부 자리가 흔들리는 구조.","둘, 배우자 별이 너무 많은 사주\n— 인연이 많으면 갈림길도 많습니다.","셋, 비겁 과다 — 지는 걸 못 견디는\n기질끼리 만나면 매일이 승부.","하지만 사주는 '기질'이고\n결혼은 '노력'입니다."],
+  cta:"내 배우자궁 상태가 궁금하다면?\n프로필 링크에서 무료 확인"},
+ {t:"EP.03 돈 그릇이 큰 사주 3가지", hook:"부자 사주는 돈이 많은 사주가 아니라\n돈이 '담기는' 사주입니다.",
+  lines:["첫째, 식상생재 —\n재능이 돈으로 이어지는 파이프라인.","둘째, 신왕재왕 — 나도 강하고\n재물도 강해 큰돈을 감당하는 팔자.","셋째, 재성이 뿌리내린 사주 —\n벌면 새지 않고 쌓입니다.","재다신약이라면? 돈은 보이는데\n손에 안 잡히는 구조 — 시스템이 답."],
+  cta:"내 돈 그릇 크기,\n프로필 링크에서 무료로 재보세요"},
+ {t:"EP.04 시험 잘 보는 사주", hook:"공부 잘하는 사주? 없습니다.\n'시험에 강한' 사주는 있습니다.",
+  lines:["시험운의 핵심은 인성(印星)\n— 문서와 합격의 별.","인성이 튼튼하면 벼락치기보다\n누적 학습에서 폭발합니다.","식상이 강한 수험생은 반대 —\n남에게 설명하는 공부법이 답.","시험 해에 인성운이 들어오면?\n같은 실력도 합격선 위로."],
+  cta:"우리 아이 공부 유형,\n프로필 링크에서 무료 확인하세요"},
+ {t:"EP.05 도화살의 진실", hook:"도화살 있다고 걱정하셨다면,\n축하부터 드립니다.",
+  lines:["도화살은 사람의 시선을 끄는\n매력의 별.","조선시대엔 스캔들의 살,\n지금은 인플루언서의 필수 코드.","자·오·묘·유 — 이 글자가 도화로 놓이면\n매력이 곧 자산이 되는 팔자.","도화가 일과 만나면 인기로 벌고,\n방치되면 구설로 샙니다."],
+  cta:"나에게 도화살이 있을까?\n프로필 링크, 10초면 나옵니다"},
+ {t:"EP.06 역마살의 시대", hook:"\"역마살 꼈네\" —\n옛날엔 걱정, 지금은 스펙입니다.",
+  lines:["역마살은 이동과 확장의 별.\n인·신·사·해가 만드는 기운.","한곳에 묶이면 시들고,\n움직일수록 운이 트이는 팔자.","해외 취업, 무역, 디지털 노마드 —\n역마의 시대가 왔습니다.","역마살인데 답답하다면\n지금 자리가 좁은 겁니다."],
+  cta:"내 사주의 이동운,\n프로필 링크에서 무료로 확인"},
+ {t:"EP.07 태어난 날로 보는 본캐", hook:"당신의 진짜 성격은\n'태어난 날의 글자' 하나에 있습니다.",
+  lines:["갑목 — 부러질지언정\n굽히지 않는 리더.","병화 — 어딜 가도\n눈에 띄는 태양.","무토 — 흔들리지 않는 큰 산,\n모두가 기대는 사람.","신금 — 예리한 보석,\n완벽주의 승부사.","계수 — 스며드는 빗물,\n마음을 읽는 직관."],
+  cta:"프로필 링크에 생일만 넣으면\n내 일간이 나옵니다. 댓글로 인증!"},
+ {t:"EP.08 2026 병오년, 불의 해", hook:"2026년은 병오(丙午) —\n60년 만의 '붉은 말의 해'입니다.",
+  lines:["천간도 불, 지지도 불.\n위아래가 온통 화(火)인 해.","화는 확산과 표현의 기운 —\n알리는 사람이 이기는 해.","사주에 화가 부족했던 분들,\n올해 시동이 걸립니다.","화가 넘치는 분들은 과열 주의 —\n계약서는 두 번 읽고 서명하세요."],
+  cta:"병오년이 내 사주에 약일까 독일까?\n프로필 링크에서 무료 확인"},
+ {t:"EP.09 만나면 안 되는 궁합?", hook:"\"원진살 궁합은 헤어진다\"\n그 말, 절반만 믿으세요.",
+  lines:["궁합의 기본은 일지끼리의 관계.\n합이면 붙고, 충이면 부딪힙니다.","하지만 충이 꼭 나쁠까요?\n서로를 깨우는 부부도 많습니다.","진짜 위험한 조합은 서로의 용신\n(필요한 기운)을 뺏는 궁합.","겉궁합(띠)만 보고 헤어지지 마세요.\n속궁합(팔자 전체)이 진짜입니다."],
+  cta:"두 사람의 여덟 글자,\n프로필 링크에서 무료로 확인하세요"},
+ {t:"EP.10 사주가 세다는 말의 진짜 뜻", hook:"\"사주가 세네요\" —\n이 말에 상처받은 분들, 들어보세요.",
+  lines:["센 사주란 괴강·백호처럼\n에너지가 응축된 팔자.","옛날 기준으론 '팔자가 드세다',","지금 기준으론 의사, 법조인,\n운동선수, CEO의 사주입니다.","센 에너지는 센 일을 만나야\n복이 됩니다.","당신 팔자는 드센 게 아니라\n담을 수 있는 게 많은 겁니다."],
+  cta:"내 사주의 에너지 등급,\n프로필 링크에서 무료로 확인하세요"}
+];
+
+const $=s=>document.querySelector(s);
+const epSel=$('#epSel'), scriptBox=$('#scriptBox'), ctaBox=$('#ctaBox');
+EPISODES.forEach((e,i)=>epSel.add(new Option(e.t,i)));
+function loadEp(){
+  const e=EPISODES[+epSel.value];
+  scriptBox.value=[e.hook,...e.lines].join('\n---\n');
+  ctaBox.value=e.cta;
+}
+epSel.onchange=loadEp; loadEp();
+
+// ── 캔버스 렌더 ──
+const cv=$('#cv'), ctx=cv.getContext('2d');
+const W=1080,H=1920;
+// 별 좌표 고정
+const STARS=[...Array(70)].map(()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2.2+.5,tw:Math.random()*6}));
+
+function drawFrame(text, small, t, idx, totalScenes){
+  // 배경
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,'#12152b'); g.addColorStop(.5,'#0b0d17'); g.addColorStop(1,'#0d0a14');
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  // 별
+  STARS.forEach(s=>{
+    const a=.25+.55*Math.abs(Math.sin(t*1.4+s.tw));
+    ctx.fillStyle=`rgba(255,240,210,${a})`;
+    ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,7); ctx.fill();
+  });
+  // 달(골드 원)
+  ctx.save();
+  ctx.globalAlpha=.9;
+  const mg=ctx.createRadialGradient(W-190,240,10,W-190,240,120);
+  mg.addColorStop(0,'rgba(232,207,154,.95)'); mg.addColorStop(1,'rgba(232,207,154,0)');
+  ctx.fillStyle=mg; ctx.beginPath(); ctx.arc(W-190,240,120,0,7); ctx.fill();
+  ctx.restore();
+  // 상단 채널명
+  ctx.textAlign='center';
+  ctx.fillStyle='#c9a86a'; ctx.font='500 40px "Noto Serif KR",serif';
+  ctx.fillText('命 운 명 연 구 소',W/2,150);
+  // 본문 (페이드+슬라이드 인)
+  const ease=Math.min(1,t*2.2);
+  const slide=(1-ease)*46;
+  ctx.save(); ctx.globalAlpha=ease;
+  ctx.fillStyle='#efe9db';
+  ctx.font='700 66px "Noto Serif KR",serif';
+  const lines=text.split('\n');
+  const lh=104, y0=H/2-(lines.length-1)*lh/2+slide;
+  lines.forEach((ln,i)=>{
+    // 골드 강조: 따옴표 줄
+    ctx.fillStyle = ln.includes('"')||ln.includes('—') ? '#e8cf9a' : '#efe9db';
+    wrapText(ln.trim(), W/2, y0+i*lh, 940, lh);
+  });
+  ctx.restore();
+  // 하단 보조
+  if(small){
+    ctx.fillStyle='#9a97a8'; ctx.font='400 34px "Noto Sans KR",sans-serif';
+    ctx.fillText(small,W/2,H-260);
+  }
+  // 진행 바
+  ctx.fillStyle='rgba(255,255,255,.12)'; ctx.fillRect(120,H-160,W-240,6);
+  ctx.fillStyle='#c9a86a'; ctx.fillRect(120,H-160,(W-240)*((idx+Math.min(1,t/3))/totalScenes),6);
+}
+function wrapText(text,x,y,maxW,lh){
+  const words=text.split(' '); let line='', yy=y;
+  for(const w of words){
+    if(ctx.measureText(line+w).width>maxW && line){ ctx.fillText(line.trim(),x,yy); line=w+' '; yy+=lh; }
+    else line+=w+' ';
+  }
+  ctx.fillText(line.trim(),x,yy);
+}
+
+// 장면 목록 만들기
+function scenes(){
+  const parts=scriptBox.value.split(/\n---\n|\n—\n/).map(s=>s.trim()).filter(Boolean);
+  const sc=parts.map((p,i)=>({text:p, dur:Math.max(3.0, p.replace(/\s/g,'').length*0.135), small:i===0?'끝까지 보면 내 사주가 보입니다':null}));
+  sc.push({text:ctaBox.value.trim(), dur:4.2, small:'▲ 프로필 링크 · 무료 사주 해석', cta:true});
+  return sc;
+}
+
+// 미리보기 1프레임
+drawFrame(EPISODES[0].hook, '끝까지 보면 내 사주가 보입니다', 1, 0, 6);
+
+// ── TTS 미리듣기 ──
+$('#previewTts').onclick=()=>{
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(scriptBox.value.replace(/---/g,'. ')+'. '+ctaBox.value);
+  u.lang='ko-KR'; u.rate=1.02;
+  const v=speechSynthesis.getVoices().find(v=>v.lang.startsWith('ko'));
+  if(v) u.voice=v;
+  speechSynthesis.speak(u);
+};
+
+// ── 녹화 ──
+$('#genBtn').onclick=async()=>{
+  const btn=$('#genBtn'), st=$('#status');
+  btn.disabled=true; $('#dl').style.display='none';
+  try{
+    const sc=scenes();
+    const totalDur=sc.reduce((a,s)=>a+s.dur,0);
+    const stream=cv.captureStream(30);
+    const mime=['video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'].find(m=>MediaRecorder.isTypeSupported(m));
+    if(!mime) throw new Error('이 브라우저는 WebM 녹화를 지원하지 않습니다. 크롬/엣지를 사용해 주세요.');
+    const rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:6_000_000});
+    const chunks=[];
+    rec.ondataavailable=e=>chunks.push(e.data);
+    const done=new Promise(res=>rec.onstop=res);
+    rec.start(250);
+
+    // 시간 기반 렌더링 — 탭이 가려져도 녹화가 계속됩니다
+    const t0=performance.now();
+    await new Promise(resolve=>{
+      const timer=setInterval(()=>{
+        const t=(performance.now()-t0)/1000;
+        let sceneIdx=0, sceneStart=0;
+        while(sceneIdx<sc.length-1 && t>sceneStart+sc[sceneIdx].dur){ sceneStart+=sc[sceneIdx].dur; sceneIdx++; }
+        const s=sc[sceneIdx];
+        drawFrame(s.text, s.small, t-sceneStart, sceneIdx, sc.length);
+        st.textContent=`렌더링 중… ${Math.min(100,Math.round(t/totalDur*100))}% (장면 ${sceneIdx+1}/${sc.length})`;
+        if(t>=totalDur){ clearInterval(timer); rec.stop(); resolve(); }
+      },33);
+    });
+    await done;
+    const blob=new Blob(chunks,{type:'video/webm'});
+    const url=URL.createObjectURL(blob);
+    const a=$('#dlLink');
+    a.href=url; a.download=`unmyeonglab_${EPISODES[+epSel.value].t.split(' ')[0]}.webm`;
+    $('#dl').style.display='block';
+    st.textContent=`완성! ${Math.round(totalDur)}초 · ${(blob.size/1048576).toFixed(1)}MB — 아래에서 다운로드하세요.`;
+  }catch(err){
+    st.textContent='⚠ '+err.message;
+  }
+  btn.disabled=false;
+};
+</script>
+</body>
+</html>
