@@ -177,16 +177,16 @@
         <div class="hl" style="border-left-color:var(--water)">💡 ${plus.tip}</div>
       </div>
 
-      ${lock(`<div class="r-block">
+      <div class="r-block">
         <h3><span class="ico">⚖</span> 오행의 균형 — 내 안의 다섯 가지 기운</h3>
         <p>사주의 여덟 글자는 각각 목·화·토·금·수 다섯 기운 중 하나를 품고 있습니다. 이 균형이 곧 성격의 지형도입니다.</p>
         <p>이 사주에서 가장 왕성한 기운은 <strong>${strongest}(${ELEM_H[strongest]})</strong>입니다. ${TEXTS2.elemStory[strongest]}</p>
         <p>${TEXTS.elem[strongest].over}</p>
         <p>가장 목마른 기운은 <strong>${weakest}(${ELEM_H[weakest]})</strong>입니다. ${TEXTS2.elemStory[weakest]}</p>
         <p>${TEXTS.elem[weakest].lack}</p>
-      </div>`)}
+      </div>
 
-      ${lock(`<div class="r-block">
+      <div class="r-block">
         <h3><span class="ico">◆</span> 재물과 직업 — 십성이 알려주는 돈의 길</h3>
         <p style="font-size:.9rem;color:var(--dim)">십성(十星)은 여덟 글자가 "나"와 맺는 열 가지 관계입니다. 어떤 별이 강한지가 돈 버는 방식과 직업 적성을 결정합니다.</p>
         <div class="badge-row">${Object.entries(tg).map(([k,v])=>`<span class="badge" style="border:1px solid var(--panel-line);color:${k===domGroup?'var(--gold-bright)':'var(--dim)'}">${k} ${v.toFixed(1)}</span>`).join('')}</div>
@@ -195,7 +195,7 @@
         <h4>이 사주를 이끄는 별들</h4>
         ${topTens.map(([name])=>`<p>${TEXTS2.tenGodDesc[name]}</p>`).join('')}
         <div class="hl">💰 ${plus.money}</div>
-      </div>`)}
+      </div>
 
       ${lock(`<div class="r-block">
         <h3><span class="ico">♥</span> 연애 · 결혼 — 인연의 흐름</h3>
@@ -247,7 +247,7 @@
 
       ${loggedIn ? '' : `<div class="lock-cta">
         <p><strong>여기서부터는 회원 전용 심층 해석입니다.</strong></p>
-        <p class="lock-sub">오행 균형 · 재물과 직업 · 결혼 시기 · 학업운 · 인생 4막 · 개운법 · 대운 · 세운 · 신살까지<br>10초 무료 가입으로 전부 열람하실 수 있습니다. (정보는 내 브라우저에만 저장)</p>
+        <p class="lock-sub">결혼 시기 후보 연도 · 학업운 · 인생 4막 · 건강과 개운법 · 대운 · 세운 · 신살까지<br>10초 무료 가입으로 전부 열람하실 수 있습니다. (정보는 내 브라우저에만 저장)</p>
         <button class="btn-gold btn-lg" id="unlockBtn">무료 회원가입하고 전체 해석 보기</button>
       </div>`}
 
