@@ -130,9 +130,16 @@ const MLAuth = (() => {
   function open(tab){
     if (!modal) modal = injectModal();
     modal.classList.remove('hidden');
+    // 뒤 배경 스크롤 잠금 — 모달 내부만 스크롤되도록
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
     if (tab) modal.querySelector(`.auth-tab[data-tab=${tab}]`).click();
   }
-  function close(){ if (modal) modal.classList.add('hidden'); }
+  function close(){
+    if (modal) modal.classList.add('hidden');
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+  }
   function logout(){ localStorage.removeItem(SESSION_KEY); notify(); }
   function notify(){ renderHeader(); document.dispatchEvent(new CustomEvent('auth-changed')); }
 

@@ -185,8 +185,18 @@ details p{color:var(--dim);font-size:.92rem;margin-top:10px}
 .foot-dim{color:var(--dim);font-size:.8rem;margin-top:8px;max-width:560px;margin-left:auto;margin-right:auto}
 
 /* ── auth modal ── */
-.auth-overlay{position:fixed;inset:0;z-index:100;background:rgba(5,6,12,.78);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px}
-.auth-box{width:100%;max-width:420px;max-height:88vh;overflow-y:auto;background:#12152a;border:1px solid var(--panel-line);border-radius:20px;padding:28px 26px;position:relative;animation:fadeUp .3s ease}
+.auth-overlay{position:fixed;inset:0;z-index:100;background:rgba(5,6,12,.78);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:16px;overscroll-behavior:contain}
+.auth-overlay.hidden{display:none!important}
+.auth-box{width:100%;max-width:420px;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:#12152a;border:1px solid var(--panel-line);border-radius:20px;padding:28px 26px;position:relative;animation:fadeUp .3s ease}
+/* 좁거나 낮은 화면(모바일·사이드 패널)에서는 전체 화면 시트로 */
+@media (max-width:520px), (max-height:620px){
+  .auth-overlay{padding:0;align-items:stretch}
+  .auth-box{max-width:none;max-height:none;height:100%;border-radius:0;border-left:none;border-right:none;padding:22px 18px 40px}
+  .auth-pane label{margin-bottom:10px}
+  .auth-pane label input{padding:10px}
+  .terms-box{padding:10px}
+  .terms-full{max-height:130px}
+}
 .auth-close{position:absolute;top:12px;right:16px;background:none;border:none;color:var(--dim);font-size:1.6rem;cursor:pointer}
 .auth-tabs{display:flex;gap:6px;margin-bottom:22px;border-bottom:1px solid rgba(255,255,255,.08)}
 .auth-tab{flex:1;background:none;border:none;color:var(--dim);font-size:1rem;font-family:var(--sans);padding:10px 0;cursor:pointer;border-bottom:2px solid transparent}
@@ -197,10 +207,14 @@ details p{color:var(--dim);font-size:.92rem;margin-top:10px}
 .auth-submit{width:100%;padding:14px;font-size:1rem;margin-top:6px}
 .auth-err{color:#f2938f;font-size:.85rem;min-height:1.2em;margin:4px 0}
 .auth-note{font-size:.75rem;color:var(--dim);text-align:center;margin-top:12px}
-.terms-box{background:#0d101f;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:14px;margin-bottom:14px}
+.terms-box{background:#0d101f;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:14px;margin-bottom:14px;text-align:left;direction:ltr}
 .terms-box hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:10px 0}
 .terms-box .chk{margin-bottom:8px!important;font-size:.85rem!important}
-.terms-box a{color:var(--gold);font-size:.78rem;margin-left:6px}
+/* 외부(호스팅 뷰어) 리셋 CSS가 label/checkbox를 덮어써도 깨지지 않도록 강제 고정 */
+.auth-box .chk{display:flex!important;flex-direction:row!important;justify-content:flex-start!important;align-items:center!important;gap:8px!important;text-align:left!important;direction:ltr!important;width:100%!important}
+.auth-box .chk input[type=checkbox]{flex:0 0 17px!important;width:17px!important;height:17px!important;margin:0!important;padding:0!important;position:static!important;opacity:1!important;appearance:auto!important;-webkit-appearance:checkbox!important;accent-color:var(--gold)}
+.auth-box .chk span, .auth-box .chk strong{flex:0 1 auto!important;text-align:left!important}
+.terms-box a{color:var(--gold);font-size:.78rem;margin-left:6px;flex:0 0 auto!important;white-space:nowrap}
 .terms-full{margin-top:10px;max-height:180px;overflow-y:auto;background:#090b16;border-radius:8px;padding:12px}
 .terms-full h4{color:var(--gold-bright);font-size:.85rem;margin-bottom:8px}
 .terms-full pre{white-space:pre-wrap;font-family:var(--sans);font-size:.76rem;color:var(--dim);line-height:1.7}
