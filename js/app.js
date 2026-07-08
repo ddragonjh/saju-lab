@@ -245,6 +245,8 @@
         ${sinsalHtml}
       </div>`)}
 
+      ${PREMIUM.sectionHtml(typeof MLAuth !== 'undefined' && MLAuth.isPremium())}
+
       ${loggedIn ? '' : `<div class="lock-cta">
         <p><strong>여기서부터는 회원 전용 심층 해석입니다.</strong></p>
         <p class="lock-sub">결혼 시기 후보 연도 · 학업운 · 인생 4막 · 건강과 개운법 · 대운 · 세운 · 신살까지<br>10초 무료 가입으로 전부 열람하실 수 있습니다. (정보는 내 브라우저에만 저장)</p>
@@ -259,6 +261,8 @@
 
     const unlock = $('#unlockBtn');
     if (unlock) unlock.onclick = () => MLAuth.open('signup');
+
+    PREMIUM.bind(r);
 
     const share = $('#shareBtn');
     if (share) share.onclick = async () => {

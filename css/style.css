@@ -229,8 +229,41 @@ details p{color:var(--dim);font-size:.92rem;margin-top:10px}
 .lock-cta p{margin-bottom:10px}
 .lock-cta .lock-sub{color:var(--dim);font-size:.9rem;margin-bottom:20px}
 
+/* ── premium ── */
+.prem-wall{position:relative;text-align:center;background:linear-gradient(160deg,rgba(201,168,106,.10),rgba(90,80,140,.10)),var(--bg-2);border:1px solid var(--gold);border-radius:var(--radius);padding:44px 30px 36px;margin:26px 0;overflow:hidden}
+.prem-badge{display:inline-block;background:linear-gradient(135deg,#d9b877,#b08d4f);color:#171204;font-weight:900;font-size:.75rem;letter-spacing:.25em;border-radius:999px;padding:6px 18px;margin-bottom:16px}
+.prem-wall h3{font-family:var(--serif);font-size:1.35rem;color:var(--gold-bright);margin-bottom:20px}
+.prem-list{list-style:none;text-align:left;max-width:520px;margin:0 auto 24px;display:grid;gap:12px}
+.prem-list li{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px 18px;font-size:.95rem;color:#cfccc2}
+.prem-price{margin:8px 0 6px}
+.prem-price .won{font-family:var(--serif);font-size:2rem;font-weight:900;color:var(--gold-bright)}
+.prem-price .per{color:var(--dim);font-size:.85rem;margin-left:8px}
+.prem-how{color:var(--dim);font-size:.88rem;margin:10px 0 18px}
+.prem-redeem{display:flex;gap:10px;max-width:420px;margin:0 auto}
+.prem-redeem input{flex:1;background:#151829;border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:13px 20px;color:var(--ink);font-size:1rem;text-align:center;letter-spacing:.08em;outline:none}
+.prem-redeem input:focus{border-color:var(--gold)}
+.prem-redeem .btn-gold{padding:13px 24px;white-space:nowrap}
+.prem-tag{font-size:.65rem;letter-spacing:.2em;background:rgba(201,168,106,.15);border:1px solid var(--gold);color:var(--gold-bright);border-radius:999px;padding:3px 10px;vertical-align:middle;margin-left:8px}
+.compat-form{display:grid;grid-template-columns:1.4fr 1.1fr .8fr .8fr .9fr 1.2fr;gap:10px;margin-bottom:18px}
+.compat-form input,.compat-form select{background:#151829;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 10px;color:var(--ink);font-size:.92rem;outline:none}
+.compat-form .btn-gold{padding:11px 8px;font-size:.92rem}
+.compat-score{display:flex;align-items:center;gap:20px;background:rgba(201,168,106,.08);border:1px solid var(--panel-line);border-radius:14px;padding:18px 24px;margin:14px 0 18px}
+.compat-score .num{font-family:var(--serif);font-size:3rem;font-weight:900;color:var(--gold-bright)}
+.compat-score .num small{font-size:1.1rem;color:var(--dim)}
+.compat-score .head{font-family:var(--serif);font-size:1.15rem}
+.month-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.month-cell{background:var(--bg-2);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px}
+.month-cell.g-길{border-color:rgba(201,168,106,.5)}
+.month-cell.g-주의{border-color:rgba(194,84,80,.45)}
+.m-label{font-weight:700;color:var(--gold-bright)}
+.m-label span{color:var(--dim);font-weight:400;font-size:.8rem;margin-left:6px}
+.m-grade{font-size:.8rem;margin:4px 0}
+.m-txt{font-size:.82rem;color:var(--dim)}
+
 @media(max-width:720px){
   .pc-only{display:none}
+  .compat-form{grid-template-columns:1fr 1fr}
+  .prem-redeem{flex-direction:column}
   .panel{padding:28px 20px}
   .saju-form .form-row,.saju-form .form-row:first-child{grid-template-columns:1fr}
   .pillars{grid-template-columns:repeat(2,1fr)}

@@ -159,5 +159,22 @@ const MLAuth = (() => {
   }
   document.addEventListener('DOMContentLoaded', renderHeader);
 
-  return { open, close, logout, isLoggedIn:()=>!!session(), user:session };
+  // ── 프리미엄 이용권 ──
+  function isPremium(){
+    const s = session(); if (!s) return false;
+    const u = getUsers()[s.email];
+    return !!(u && u.premium);
+  }
+  async function redeem(code){
+    const s = session(); if (!s || !code) return false;
+    if (typeof PREMIUM_HASHES === 'undefined') return false;
+    const h = await hash(code);
+    if (!PREMIUM_HASHES.includes(h)) return false;
+    const users = getUsers();
+    if (users[s.email]) { users[s.email].premium = true; users[s.email].premiumAt = new Date().toISOString(); saveUsers(users); }
+    notify();
+    return true;
+  }
+
+  return { open, close, logout, isLoggedIn:()=>!!session(), user:session, isPremium, redeem };
 })();
