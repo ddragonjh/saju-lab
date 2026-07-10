@@ -46,8 +46,9 @@
   // ── 폼 초기화 ──
   const yearSel = $('#inYear'), monthSel = $('#inMonth'), daySel = $('#inDay');
   const hourSel = $('#inHour'), minSel = $('#inMin');
-  const thisYear = new Date().getFullYear();
-  for (let y=thisYear; y>=1930; y--) yearSel.add(new Option(y+'년', y));
+  const MIN_YEAR = 1930;
+  const MAX_YEAR = 2035;
+  for (let y=MAX_YEAR; y>=MIN_YEAR; y--) yearSel.add(new Option(y+'년', y));
   yearSel.value = 1995;
   for (let m=1; m<=12; m++) monthSel.add(new Option(m+'월', m));
   function fillDays(){
@@ -69,12 +70,17 @@
     try {
       const o = {
         name: Sec.normalizeName($('#inName').value),
-        gender: document.querySelector('input[name=gender]:checked').value,
+        gender: document.querySelector('input[name=gender]:checked')?.value,
         year:+yearSel.value, month:+monthSel.value, day:+daySel.value,
         hour:+hourSel.value, minute:+minSel.value,
         unknownTime: $('#unknownTime').checked,
-        trueSolar: $('#trueSolar').checked
+        trueSolar: $('#trueSolar').checked,
+        dayBoundary: document.querySelector('input[name=dayBoundary]:checked')?.value || '23'
       };
+      if (!o.gender) {
+        renderError('성별을 선택해 주세요. 대운 방향 계산에 필요한 필수 항목입니다.');
+        return;
+      }
       lastResult = SAJU.compute(o);
       render(lastResult);
       $('#result').classList.remove('hidden');
@@ -95,6 +101,11 @@
   const S=SAJU.STEMS, SH=SAJU.STEMS_H, B=SAJU.BRANCHES, BH=SAJU.BRANCHES_H;
   const SE=SAJU.STEM_ELEM, BE=SAJU.BRANCH_ELEM;
   const ELEM_H = {목:'木',화:'火',토:'土',금:'金',수:'水'};
+  const CONTENT_NOTICE = '오락·자기이해용 참고 콘텐츠이며 의료·법률·투자·진로 판단을 대체하지 않습니다.';
+
+  function notice(size = '') {
+    return `<p class="content-notice ${size}">${CONTENT_NOTICE}</p>`;
+  }
 
   function renderError(message) {
     const result = $('#result');
@@ -129,6 +140,10 @@
     const who = esc(whoText);
     const genderTxt = o.gender==='M'?'남자':'여자';
     const timeTxt = o.unknownTime?'시간 미상':`${String(o.hour).padStart(2,'0')}:${String(o.minute).padStart(2,'0')}`;
+    const optionTxt = [
+      o.trueSolar && !o.unknownTime ? '간이 시각 보정 −30분' : '',
+      !o.unknownTime ? `자시 ${o.dayBoundary === '0' ? '0시' : '23시'} 기준` : ''
+    ].filter(Boolean).join(' · ');
     const iljuName = S[r.dayP.stem]+B[r.dayP.branch];
     const yearName = S[r.yearP.stem]+B[r.yearP.branch];
     const animal = SAJU.BRANCH_ANIMAL[r.yearP.branch];
@@ -208,8 +223,10 @@
     $('#result').innerHTML = `
       <div class="r-head">
         <div class="r-name">${who}의 사주팔자</div>
-        <div class="r-meta">${o.year}년 ${o.month}월 ${o.day}일 (양력) · ${timeTxt} · ${genderTxt}${o.trueSolar&&!o.unknownTime?' · 진태양시 보정':''}</div>
+        <div class="r-meta">${o.year}년 ${o.month}월 ${o.day}일 (양력) · ${timeTxt} · ${genderTxt}${optionTxt ? ' · ' + optionTxt : ''}</div>
         <div class="r-ilju">${yearName}년 ${animal}띠 · 일주 ${SH[r.dayP.stem]}${BH[r.dayP.branch]} (${iljuName})</div>
+        ${notice()}
+        ${o.trueSolar&&!o.unknownTime?'<p class="tag-note">간이 시각 보정은 모든 출생자에게 동일하게 30분을 빼는 옵션이며, 출생지 경도·균시차·서머타임을 반영한 정밀 진태양시 계산이 아닙니다.</p>':''}
         ${r.boundary?'<p class="tag-note">⚠ 절입일 경계 부근 출생으로 월주가 달라질 수 있습니다. 전문 만세력 대조를 권장합니다.</p>':''}
       </div>
 
@@ -246,6 +263,7 @@
 
       <div class="r-block">
         <h3><span class="ico">◆</span> 재물과 직업 — 십성이 알려주는 돈의 길</h3>
+        ${notice('small')}
         <p style="font-size:.9rem;color:var(--dim)">십성(十星)은 여덟 글자가 "나"와 맺는 열 가지 관계입니다. 어떤 별이 강한지가 돈 버는 방식과 직업 적성을 결정합니다.</p>
         <div class="badge-row">${Object.entries(tg).map(([k,v])=>`<span class="badge" style="border:1px solid var(--panel-line);color:${k===domGroup?'var(--gold-bright)':'var(--dim)'}">${k} ${v.toFixed(1)}</span>`).join('')}</div>
         <p>${TEXTS.tenDominant[domGroup]}</p>
@@ -259,6 +277,7 @@
 
       ${lock(`<div class="r-block">
         <h3><span class="ico">♥</span> 연애 · 결혼 — 인연의 흐름</h3>
+        ${notice('small')}
         <p>${plus.love}</p>
         <h4>배우자궁이 말해주는 나의 인연</h4>
         <p>${TEXTS.spousePalace[r.dayP.branch]}</p>
@@ -270,6 +289,7 @@
 
       ${lock(`<div class="r-block">
         <h3><span class="ico">✎</span> 학업 · 시험운</h3>
+        ${notice('small')}
         <p>${studyTxt}</p>
       </div>`)}
 
@@ -281,6 +301,7 @@
 
       ${lock(`<div class="r-block">
         <h3><span class="ico">✚</span> 건강 신호와 개운법</h3>
+        ${notice('small')}
         <p>오행 중 <strong>${weakest}</strong> 기운이 가장 약해, 명리학적으로 <strong>${HEALTH[weakest]}</strong> 계통의 컨디션 관리가 평생의 과제로 읽힙니다. 큰 병의 예언이 아니라 "먼저 지치는 부위"라는 신호이니, 정기 검진과 생활 습관으로 충분히 다스릴 수 있습니다.</p>
         <h4>부족한 ${weakest} 기운을 채우는 개운법</h4>
         <p><strong>행운의 색</strong> ${lucky.color} · <strong>방위</strong> ${lucky.dir} · <strong>숫자</strong> ${lucky.num} · <strong>계절</strong> ${lucky.season}</p>
@@ -308,19 +329,23 @@
       ${PREMIUM.sectionHtml(typeof MLAuth !== 'undefined' && MLAuth.isPremium(), r)}
 
       ${loggedIn ? '' : `<div class="lock-cta">
-        <p><strong>여기서부터는 회원 전용 심층 해석입니다.</strong></p>
-        <p class="lock-sub">결혼 시기 후보 연도 · 학업운 · 인생 4막 · 건강과 개운법 · 대운 · 세운 · 신살까지<br>10초 무료 가입으로 전부 열람하실 수 있습니다. (정보는 내 브라우저에만 저장)</p>
-        <button class="btn-gold btn-lg" id="unlockBtn">무료 회원가입하고 전체 해석 보기</button>
+        <p><strong>여기서부터는 이 기기 로컬 계정 전용 심층 해석입니다.</strong></p>
+        <p class="lock-sub">결혼 시기 후보 연도 · 학업운 · 인생 4막 · 건강과 개운법 · 대운 · 세운 · 신살까지<br>로컬 계정을 만들면 이 기기에서 열람할 수 있습니다. 서버 회원가입이 아니며 정보는 내 브라우저에만 저장됩니다.</p>
+        <button class="btn-gold btn-lg" id="unlockBtn">로컬 계정 만들고 전체 해석 보기</button>
       </div>`}
 
       <div class="r-actions">
-        <button class="btn-ghost" onclick="window.print()">해석 결과 인쇄 · PDF 저장</button>
+        <button class="btn-ghost" id="printBtn">해석 결과 인쇄 · PDF 저장</button>
         <button class="btn-ghost" id="shareBtn">결과 공유하기</button>
-        <button class="btn-ghost" onclick="document.getElementById('reading').scrollIntoView({behavior:'smooth'})">다른 사주 보기</button>
+        <button class="btn-ghost" id="newReadingBtn">다른 사주 보기</button>
       </div>`;
 
     const unlock = $('#unlockBtn');
     if (unlock) unlock.onclick = () => MLAuth.open('signup');
+    const printBtn = $('#printBtn');
+    if (printBtn) printBtn.onclick = () => window.print();
+    const newReadingBtn = $('#newReadingBtn');
+    if (newReadingBtn) newReadingBtn.onclick = () => document.getElementById('reading').scrollIntoView({behavior:reduceMotion?'auto':'smooth'});
 
     PREMIUM.bind(r);
     if (typeof FORTUNE !== 'undefined') FORTUNE.bind(r);

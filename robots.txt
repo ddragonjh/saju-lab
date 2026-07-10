@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ddragonjh.github.io/saju-lab/sitemap.xml

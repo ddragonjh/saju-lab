@@ -5,6 +5,8 @@
    ═══════════════════════════════════════════════════════ */
 
 const SAJU = (() => {
+  const MIN_YEAR = 1930;
+  const MAX_YEAR = 2035;
 
   // ── 기초 테이블 ─────────────────────────────
   const STEMS   = ['갑','을','병','정','무','기','경','신','임','계'];
@@ -116,11 +118,26 @@ const SAJU = (() => {
 
   // ── 메인 계산 ────────────────────────────────
   /**
-   * @param {Object} o {year,month,day,hour,minute,gender:'M'|'F',unknownTime,trueSolar}
+   * @param {Object} o {year,month,day,hour,minute,gender:'M'|'F',unknownTime,trueSolar,dayBoundary:'23'|'0'}
    */
   function compute(o){
-    // 진태양시 보정
-    let dt = new Date(o.year, o.month-1, o.day, o.unknownTime?12:o.hour, o.unknownTime?0:o.minute);
+    const year = Number(o.year), month = Number(o.month), day = Number(o.day);
+    const hour = o.unknownTime ? 12 : Number(o.hour);
+    const minute = o.unknownTime ? 0 : Number(o.minute);
+    if (!Number.isInteger(year) || year < MIN_YEAR || year > MAX_YEAR) throw new RangeError('지원 범위는 1930년부터 2035년까지입니다.');
+    if (!Number.isInteger(month) || month < 1 || month > 12) throw new RangeError('월 입력값이 올바르지 않습니다.');
+    if (!Number.isInteger(day) || day < 1 || day > 31) throw new RangeError('일 입력값이 올바르지 않습니다.');
+    if (!o.unknownTime && (!Number.isInteger(hour) || hour < 0 || hour > 23 || !Number.isInteger(minute) || minute < 0 || minute > 59)) {
+      throw new RangeError('시간 입력값이 올바르지 않습니다.');
+    }
+    if (!['M','F'].includes(o.gender)) throw new RangeError('성별을 선택해 주세요.');
+    const rawDate = new Date(year, month-1, day);
+    if (rawDate.getFullYear() !== year || rawDate.getMonth() !== month-1 || rawDate.getDate() !== day) {
+      throw new RangeError('존재하지 않는 날짜입니다.');
+    }
+
+    // 간이 시각 보정: 출생지 경도·균시차를 쓰는 정밀 진태양시가 아니라 모든 출생자에게 동일하게 30분을 적용합니다.
+    let dt = new Date(year, month-1, day, hour, minute);
     if (!o.unknownTime && o.trueSolar) dt = new Date(dt.getTime() - 30*60000);
 
     let y = dt.getFullYear(), m = dt.getMonth()+1, d = dt.getDate();
@@ -147,9 +164,10 @@ const SAJU = (() => {
     const monthP = ganzhiOf(null); monthP.stem = monthStem; monthP.branch = monthBranch;
     monthP.idx = (()=>{ for(let i=0;i<60;i++){ if(i%10===monthStem && i%12===monthBranch) return i;} return 0; })();
 
-    // 일주 (자시 23시 이후는 다음날로)
+    // 일주: 자시를 다음 날로 볼지 여부는 학파별 차이가 있어 23시/0시 기준을 선택합니다.
     let dy=y, dm=m, dd=d;
-    if (!o.unknownTime && hh >= 23){
+    const useEarlyZi = o.dayBoundary !== '0';
+    if (!o.unknownTime && useEarlyZi && hh >= 23){
       const nx = new Date(y, m-1, d+1); dy=nx.getFullYear(); dm=nx.getMonth()+1; dd=nx.getDate();
     }
     const dayP = ganzhiOf(dayGanzhi(dy,dm,dd));

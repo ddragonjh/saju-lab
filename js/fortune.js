@@ -132,6 +132,7 @@ const FORTUNE = (() => {
         <div class="hub-head">
           <p class="hub-eyebrow">사주 무료 운세</p>
           <h3>오늘 · 이주 · 이달 흐름</h3>
+          <p class="content-notice small">오락·자기이해용 참고 콘텐츠이며 의료·법률·투자·진로 판단을 대체하지 않습니다.</p>
           <p>입력한 사주를 기준으로 별자리와 기간별 운세를 점수로 정리합니다.</p>
         </div>
 

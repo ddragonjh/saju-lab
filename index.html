@@ -9,7 +9,11 @@
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="theme-color" content="#0b0d17">
 <meta name="application-name" content="운명연구소">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; img-src 'self' data: https://ddragonjh.github.io; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; form-action 'self'; upgrade-insecure-requests">
 <link rel="canonical" href="https://ddragonjh.github.io/saju-lab/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="site.webmanifest">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ko_KR">
 <meta property="og:site_name" content="운명연구소">
@@ -26,9 +30,6 @@
 <meta name="twitter:title" content="운명연구소 — 사주 · 타로 · 신점 운세 리딩">
 <meta name="twitter:description" content="무료 사주, 별자리, 오늘의 타로, 신점 한마디와 오늘·이주·이달 운세 점수를 확인하세요.">
 <meta name="twitter:image" content="https://ddragonjh.github.io/saju-lab/assets/og-image.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <script type="application/ld+json">
 {
@@ -41,11 +42,24 @@
       "operatingSystem": "Web",
       "inLanguage": "ko-KR",
       "description": "사주, 타로, 신점, 별자리와 오늘·이주·이달 운세를 제공하고 프리미엄 질문 리딩을 점수화하는 운세 웹 서비스입니다.",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "KRW"
-      }
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "무료 운세 리딩",
+          "price": "0",
+          "priceCurrency": "KRW",
+          "availability": "https://schema.org/InStock",
+          "description": "사주, 타로, 신점, 별자리 기본 리딩을 무료로 제공합니다."
+        },
+        {
+          "@type": "Offer",
+          "name": "프리미엄 질문 리딩",
+          "price": "9900",
+          "priceCurrency": "KRW",
+          "availability": "https://schema.org/InStock",
+          "description": "재회, 속마음, 환승이별, 이직, 합격, 승진, 궁합, 타이밍 리딩을 제공하는 유료 이용권입니다."
+        }
+      ]
     },
     {
       "@type": "FAQPage",
@@ -68,10 +82,10 @@
         },
         {
           "@type": "Question",
-          "name": "진태양시 보정이 뭔가요?",
+          "name": "간이 시각 보정이 뭔가요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "한국 표준시와 실제 태양 위치의 차이를 반영해 시주 경계 부근의 오차를 줄이는 보정입니다."
+            "text": "출생지 경도와 날짜별 균시차를 계산하는 정밀 진태양시가 아니라 모든 출생자에게 동일하게 30분을 빼는 간이 옵션입니다."
           }
         }
       ]
@@ -107,7 +121,7 @@
       <div class="astro-ring ring-c"></div>
       <div class="astro-core"></div>
     </div>
-    <p class="hero-eyebrow">正統 命理學 · 만세력 기반 심층 분석</p>
+    <p class="hero-eyebrow">전통 명리 해석 · 만세력 기반 참고 분석</p>
     <h1>당신의 여덟 글자에<br>새겨진 <em>운명의 지도</em></h1>
     <p class="hero-sub">태어난 년·월·일·시로 사주를 풀고<br class="pc-only">타로와 신점은 전용 리딩관에서 바로 확인합니다.</p>
     <a href="#reading" class="btn-gold btn-lg">나의 운세 확인하기</a>
@@ -145,7 +159,7 @@
   <!-- ═══════════ INPUT ═══════════ -->
   <section class="panel" id="reading">
     <h2 class="sec-title"><span>命</span>사주 정보 입력</h2>
-    <p class="sec-desc">양력 생년월일을 입력해 주세요. 음력만 아시는 경우, 네이버 달력 등에서 양력으로 변환 후 입력하시면 정확합니다.</p>
+    <p class="sec-desc">양력 생년월일을 입력해 주세요. 음력만 아시는 경우, 달력 변환 도구에서 양력으로 바꾼 뒤 입력하면 참고 결과의 일관성이 높아집니다.</p>
 
     <form id="sajuForm" class="saju-form" autocomplete="off">
       <div class="form-row">
@@ -153,13 +167,13 @@
           <label for="inName">이름 <small>(선택)</small></label>
           <input type="text" id="inName" placeholder="홍길동" maxlength="12">
         </div>
-        <div class="field">
-          <label>성별</label>
-          <div class="seg" role="radiogroup">
-            <label><input type="radio" name="gender" value="M" checked><span>남자</span></label>
+        <fieldset class="field fieldset-field">
+          <legend>성별 <small>(필수)</small></legend>
+          <div class="seg">
+            <label><input type="radio" name="gender" value="M" required><span>남자</span></label>
             <label><input type="radio" name="gender" value="F"><span>여자</span></label>
           </div>
-        </div>
+        </fieldset>
       </div>
 
       <div class="form-row">
@@ -186,20 +200,40 @@
           <label for="inMin">분</label>
           <select id="inMin"></select>
         </div>
-        <div class="field field-check">
+        <fieldset class="field field-check">
+          <legend>시간 옵션</legend>
           <label class="chk"><input type="checkbox" id="unknownTime"> <span>태어난 시간을 몰라요</span></label>
-          <label class="chk"><input type="checkbox" id="trueSolar" checked> <span>진태양시 보정 (−30분)</span>
-            <i class="tip" data-tip="한국 표준시(동경 135도)와 실제 태양 위치(약 127.5도)의 차이를 보정합니다. 대부분의 전문 역술원이 적용하는 방식입니다.">?</i>
+          <label class="chk"><input type="checkbox" id="trueSolar"> <span>간이 시각 보정 (모든 출생자 −30분)</span>
+            <i class="tip" data-tip="출생지 경도와 날짜별 균시차를 반영한 정밀 진태양시가 아닙니다. 모든 출생자에게 동일하게 30분을 빼는 간이 옵션이며 기본값은 꺼져 있습니다.">?</i>
           </label>
-        </div>
+        </fieldset>
+      </div>
+
+      <div class="form-row option-row">
+        <fieldset class="field fieldset-field">
+          <legend>자시 날짜 기준</legend>
+          <div class="seg">
+            <label><input type="radio" name="dayBoundary" value="23" checked><span>23시 기준</span></label>
+            <label><input type="radio" name="dayBoundary" value="0"><span>0시 기준</span></label>
+          </div>
+          <small class="field-help">일주를 넘기는 시점은 학파별 차이가 있어 직접 선택할 수 있습니다.</small>
+        </fieldset>
       </div>
 
       <button type="submit" class="btn-gold btn-lg btn-block">사주팔자 심층 해석 시작</button>
+      <div class="form-trust-note">
+        <ul>
+          <li>입력값은 이 기기 브라우저에서만 계산되며 URL 파라미터나 외부 서버로 전송하지 않습니다.</li>
+          <li>로컬 계정, 프리미엄 등록 여부, 오늘의 운세 확인 여부만 localStorage에 저장될 수 있습니다.</li>
+          <li><button type="button" data-clear-local>이 기기에 저장된 정보 삭제</button></li>
+          <li>결과는 오락·자기이해용 참고 콘텐츠이며 의료·법률·투자·진로 판단을 대체하지 않습니다.</li>
+        </ul>
+      </div>
     </form>
   </section>
 
   <!-- ═══════════ RESULT ═══════════ -->
-  <section id="result" class="result hidden"></section>
+  <section id="result" class="result hidden" aria-live="polite" aria-atomic="false"></section>
 
   <!-- ═══════════ ABOUT ═══════════ -->
   <section class="panel" id="about">
@@ -217,9 +251,9 @@
     <h2 class="sec-title"><span>問</span>자주 묻는 질문</h2>
     <details><summary>결혼 시기는 어떻게 계산하나요?</summary><p>배우자를 뜻하는 십성(남자는 재성, 여자는 관성)이 세운·대운에서 들어오는 해, 배우자궁(일지)과 합(合)이 되는 해, 도화 기운이 강해지는 해를 종합해 "인연 기운이 강한 후보 연도"를 제시합니다. 확정이 아니라 확률적 흐름입니다.</p></details>
     <details><summary>태어난 시간을 모르면 못 보나요?</summary><p>볼 수 있습니다. 시주를 제외한 여섯 글자(삼주)로 해석하며, 시주가 담당하는 말년운·자녀운 항목만 생략됩니다. 성격·재물·결혼·대운 등 핵심 해석은 그대로 제공합니다.</p></details>
-    <details><summary>진태양시 보정이 뭔가요?</summary><p>한국 표준시는 일본 아카시(동경 135도) 기준이라 실제 한국 하늘의 태양보다 약 30분 빠릅니다. 시주가 시간 경계(홀수 시각) 부근이면 결과가 달라질 수 있어, 전문 역술원처럼 −30분 보정을 기본 적용합니다.</p></details>
-    <details><summary>절입일(절기 경계) 출생인데 정확한가요?</summary><p>절기 날짜는 천문 근사식으로 계산하며 대부분 정확하지만, 절입 당일의 '시각' 단위 경계에 걸친 출생은 드물게 월주가 달라질 수 있습니다. 이 경우 전문 만세력 대조를 권장하며, 결과 화면에 경계 여부를 표시해 드립니다.</p></details>
-    <details><summary>이 해석을 얼마나 믿어야 하나요?</summary><p>사주명리는 수천 년 누적된 통계적 인간 이해의 틀이지, 미래를 확정하는 예언이 아닙니다. 본 서비스는 자기 이해와 시기 판단의 참고 자료이며, 중요한 인생 결정은 반드시 본인의 판단으로 하시기 바랍니다.</p></details>
+    <details><summary>간이 시각 보정이 뭔가요?</summary><p>출생지 경도와 날짜별 균시차를 쓰는 정밀 진태양시 계산이 아니라, 모든 출생자에게 동일하게 30분을 빼는 간이 옵션입니다. 기본값은 꺼져 있으며, 한국 출생자의 시간 경계 참고용으로만 사용해 주세요. 해외 출생자는 도시·위도·경도·서머타임을 반영하지 않습니다.</p></details>
+    <details><summary>절입일(절기 경계) 출생인데 참고할 수 있나요?</summary><p>절기 날짜는 천문 근사식으로 계산하며, 절입 당일의 시각 단위 경계에 걸친 출생은 월주가 달라질 수 있습니다. 이 경우 독립 만세력과 대조해 보는 것을 권장하며, 결과 화면에 경계 여부를 표시해 드립니다. 현재 검증 표시는 1930년부터 2035년 범위 기준입니다.</p></details>
+    <details><summary>이 해석을 얼마나 믿어야 하나요?</summary><p>사주명리는 전통 해석 체계이며 미래를 확정하는 예언이 아닙니다. 본 서비스는 자기 이해와 시기 판단의 참고 자료이며, 중요한 인생 결정은 본인의 판단과 전문가 상담을 함께 고려해 진행해 주세요.</p></details>
   </section>
 
 </main>
@@ -227,12 +261,21 @@
 <footer class="foot">
   <p><strong>운명연구소</strong> — 사주 · 타로 · 신점 운세 리딩</p>
   <p class="foot-dim">본 해석은 명리학 이론에 기반한 참고용 콘텐츠이며 오락·자기이해 목적으로 제공됩니다. 의료·법률·투자 판단의 근거가 될 수 없습니다.</p>
+  <nav class="foot-links" aria-label="법적 안내">
+    <a href="privacy.html">개인정보처리방침</a>
+    <a href="terms.html">이용약관</a>
+    <a href="refund.html">환불정책</a>
+    <a href="business.html">사업자정보</a>
+    <a href="mailto:ddragonjh@gmail.com">문의하기</a>
+  </nav>
+  <p class="foot-business">고객센터: <a href="mailto:ddragonjh@gmail.com">ddragonjh@gmail.com</a> · 프리미엄 이용권 환불 안내는 <a href="refund.html">환불정책</a>을 확인해 주세요.</p>
 </footer>
 
 <script src="js/engine.js"></script>
 <script src="js/texts.js"></script>
 <script src="js/texts2.js"></script>
 <script src="js/security.js"></script>
+<script src="js/legal.js"></script>
 <script src="js/fortune.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/premium-hashes.js"></script>

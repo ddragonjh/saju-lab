@@ -65,55 +65,61 @@ const MLAuth = (() => {
     return 'x'+(h>>>0).toString(16);
   }
 
-  const TERMS_SERVICE = `제1조 (목적) 본 약관은 운명연구소(이하 "서비스")가 제공하는 사주 해석 콘텐츠 이용에 관한 조건과 절차를 규정합니다.
-제2조 (서비스의 성격) 본 서비스의 모든 해석은 명리학 이론에 기반한 오락·자기이해 목적의 참고 콘텐츠이며, 의료·법률·투자 등 전문적 판단을 대체하지 않습니다. 해석 결과로 인한 의사결정의 책임은 이용자 본인에게 있습니다.
-제3조 (계정) 이용자는 정확한 정보로 가입해야 하며, 계정 정보 관리 책임은 본인에게 있습니다. 타인의 정보 도용 시 서비스 이용이 제한될 수 있습니다.
-제4조 (콘텐츠 이용) 서비스가 제공하는 해석 텍스트·디자인의 저작권은 서비스에 있으며, 개인적 이용 범위를 넘는 무단 복제·판매를 금합니다.
-제5조 (서비스 변경) 서비스는 콘텐츠 개선을 위해 해석 알고리즘과 화면을 사전 고지 없이 변경할 수 있습니다.
-제6조 (면책) 천문 근사 계산의 특성상 절기 경계 출생 등 일부 사례에서 만세력 결과가 달라질 수 있으며, 서비스는 이에 대한 참고 고지를 제공합니다.`;
+  const TERMS_SERVICE = `제1조 (목적) 본 약관은 운명연구소가 제공하는 사주·타로·신점·별자리 참고 콘텐츠 이용 조건을 정합니다.
+제2조 (서비스의 성격) 모든 결과는 오락·자기이해용 참고 콘텐츠이며 의료·법률·투자·진로 판단을 대체하지 않습니다.
+제3조 (로컬 계정) 현재 계정은 서버 회원가입이 아니라 이 기기 브라우저 localStorage에만 저장되는 로컬 계정입니다. 다른 기기나 브라우저에서는 계정이 공유되지 않습니다.
+제4조 (연령 제한) 만 14세 미만 이용자는 로컬 계정 생성과 프리미엄 결제를 할 수 없습니다. 미성년자는 법정대리인 동의 없이 유료 이용권을 구매하지 않아야 합니다.
+제5조 (유료 이용권) 프리미엄 이용권은 결제 전 제공 내용, 가격, 코드 발급 방식, 환불 조건, 고객센터 이메일을 고지한 뒤 발급합니다.
+제6조 (콘텐츠 이용) 서비스의 텍스트·디자인·코드는 개인적 이용 범위를 넘는 무단 복제·판매를 금합니다.`;
 
-  const TERMS_PRIVACY = `1. 수집 항목: 이름(선택), 이메일, 비밀번호(암호화 저장), 생년월일시·성별(사주 계산 목적).
-2. 저장 방식: 모든 정보는 이용자의 브라우저(localStorage)에만 저장되며, 외부 서버로 전송·수집되지 않습니다. 서비스 운영자를 포함한 제3자는 이용자의 정보에 접근할 수 없습니다.
-3. 비밀번호: SHA-256 단방향 암호화로 저장되어 원문을 알 수 없습니다.
-4. 보유 기간: 이용자가 브라우저 데이터를 삭제하거나 회원 탈퇴 시 즉시 파기됩니다.
-5. 제3자 제공: 없음. 광고·마케팅 목적의 외부 제공을 하지 않습니다.
-6. 이용자 권리: 브라우저 설정(사이트 데이터 삭제)으로 언제든 모든 정보를 완전히 삭제할 수 있습니다.
-7. 유의: 공용 PC에서는 로그아웃 및 브라우저 데이터 삭제를 권장합니다.`;
+  const TERMS_PRIVACY = `1. 수집 항목: 이름(선택), 이메일, 비밀번호 해시, 로컬 계정 상태, 프리미엄 등록 여부.
+2. 처리 목적: 이 기기에서 심층 해석 잠금 해제, 프리미엄 이용권 상태 표시, 오늘의 운세 확인 상태 표시.
+3. 저장 위치: 모든 저장 정보는 이용자의 브라우저 localStorage에만 저장되며 외부 서버로 전송되지 않습니다.
+4. 보유 기간: 이용자가 이 기기의 사이트 데이터를 삭제하거나 저장 정보 삭제 기능을 실행할 때까지입니다.
+5. 제3자 제공: 없습니다.
+6. 외부 리소스: Google Fonts 외부 호출은 제거했으며 같은 도메인의 정적 파일을 사용합니다.
+7. 문의: ddragonjh@gmail.com`;
 
   // ── 모달 주입 ──
   function injectModal(){
     const wrap = document.createElement('div');
     wrap.id = 'authModal'; wrap.className = 'auth-overlay hidden';
+    wrap.setAttribute('role', 'dialog');
+    wrap.setAttribute('aria-modal', 'true');
+    wrap.setAttribute('aria-labelledby', 'authTitle');
     wrap.innerHTML = `
     <div class="auth-box">
       <button class="auth-close" aria-label="닫기">×</button>
+      <h2 class="sec-title" id="authTitle"><span>鍵</span>로컬 계정</h2>
+      <p class="auth-note">이 계정은 서버 회원가입이 아니라 이 기기에만 저장되는 로컬 계정입니다.</p>
       <div class="auth-tabs">
         <button class="auth-tab active" data-tab="login">로그인</button>
-        <button class="auth-tab" data-tab="signup">회원가입</button>
+        <button class="auth-tab" data-tab="signup">로컬 계정 만들기</button>
       </div>
 
       <form class="auth-pane" id="paneLogin">
-        <label>이메일<input type="email" id="loginEmail" required placeholder="you@example.com"></label>
-        <label>비밀번호<input type="password" id="loginPw" required minlength="6" placeholder="••••••"></label>
-        <p class="auth-err" id="loginErr"></p>
-        <button type="submit" class="btn-gold auth-submit">로그인</button>
+        <label for="loginEmail">이메일</label><input type="email" id="loginEmail" required placeholder="you@example.com">
+        <label for="loginPw">비밀번호</label><input type="password" id="loginPw" required minlength="6" placeholder="••••••">
+        <p class="auth-err" id="loginErr" aria-live="polite"></p>
+        <button type="submit" class="btn-gold auth-submit">이 기기 로컬 계정 로그인</button>
       </form>
 
       <form class="auth-pane hidden" id="paneSignup">
-        <label>이름 <small>(해석 결과에 표시)</small><input type="text" id="suName" maxlength="12" placeholder="홍길동"></label>
-        <label>이메일<input type="email" id="suEmail" required placeholder="you@example.com"></label>
-        <label>비밀번호 <small>(6자 이상)</small><input type="password" id="suPw" required minlength="6" placeholder="••••••"></label>
+        <label for="suName">이름 <small>(해석 결과에 표시)</small></label><input type="text" id="suName" maxlength="12" placeholder="홍길동">
+        <label for="suEmail">이메일</label><input type="email" id="suEmail" required placeholder="you@example.com">
+        <label for="suPw">비밀번호 <small>(6자 이상)</small></label><input type="password" id="suPw" required minlength="6" placeholder="••••••">
         <div class="terms-box">
-          <label class="chk"><input type="checkbox" id="agreeAll"> <strong>전체 동의</strong></label>
-          <hr>
-          <label class="chk"><input type="checkbox" class="agree" id="agreeSvc" required> [필수] 이용약관 동의 <a href="#" data-terms="svc">전문 보기</a></label>
-          <label class="chk"><input type="checkbox" class="agree" id="agreePriv" required> [필수] 개인정보 처리방침 동의 <a href="#" data-terms="priv">전문 보기</a></label>
-          <label class="chk"><input type="checkbox" class="agree" id="agreeMkt"> [선택] 새 운세 콘텐츠 소식 받기</label>
+          <label class="chk"><input type="checkbox" class="agree" id="agreeSvc" required> <span>[필수] 이용약관 동의</span></label>
+          <div class="terms-link-row"><a href="terms.html" target="_blank" rel="noopener">새 페이지</a><button type="button" data-terms="svc">모달에서 전문 보기</button></div>
+          <label class="chk"><input type="checkbox" class="agree" id="agreePriv" required> <span>[필수] 개인정보 수집·이용 동의</span></label>
+          <div class="terms-link-row"><a href="privacy.html" target="_blank" rel="noopener">새 페이지</a><button type="button" data-terms="priv">모달에서 전문 보기</button></div>
+          <label class="chk"><input type="checkbox" class="agree" id="agreeAge" required> <span>[필수] 만 14세 이상이며, 미성년자는 유료 결제 전 법정대리인 동의가 필요함을 확인</span></label>
+          <label class="chk"><input type="checkbox" class="agree" id="agreeMkt"> <span>[선택] 마케팅 정보 수신 동의</span></label>
           <div class="terms-full hidden" id="termsFull"><h4 id="termsTitle"></h4><pre id="termsBody"></pre></div>
         </div>
-        <p class="auth-err" id="suErr"></p>
-        <button type="submit" class="btn-gold auth-submit">가입하고 전체 해석 보기</button>
-        <p class="auth-note">※ 모든 정보는 회원님의 브라우저에만 저장되며 서버로 전송되지 않습니다.</p>
+        <p class="auth-err" id="suErr" aria-live="polite"></p>
+        <button type="submit" class="btn-gold auth-submit">이 기기에 로컬 계정 만들기</button>
+        <p class="auth-note">이메일과 비밀번호 해시는 이 기기 localStorage에만 저장됩니다. 서버로 전송되지 않습니다.</p>
       </form>
     </div>`;
     document.body.appendChild(wrap);
@@ -122,10 +128,12 @@ const MLAuth = (() => {
       wrap.querySelectorAll('.auth-tab').forEach(b=>b.classList.toggle('active', b.dataset.tab===t));
       wrap.querySelector('#paneLogin').classList.toggle('hidden', t!=='login');
       wrap.querySelector('#paneSignup').classList.toggle('hidden', t!=='signup');
+      window.setTimeout(focusFirst, 0);
     };
     wrap.querySelectorAll('.auth-tab').forEach(b=>b.onclick=()=>show(b.dataset.tab));
     wrap.querySelector('.auth-close').onclick = close;
     wrap.onclick = e => { if (e.target===wrap) close(); };
+    wrap.addEventListener('keydown', trapFocus);
 
     // 약관 전문 토글
     wrap.querySelectorAll('[data-terms]').forEach(a=>a.onclick = e=>{
@@ -135,15 +143,12 @@ const MLAuth = (() => {
       wrap.querySelector('#termsBody').textContent = a.dataset.terms==='svc' ? TERMS_SERVICE : TERMS_PRIVACY;
       full.classList.remove('hidden');
     });
-    wrap.querySelector('#agreeAll').onchange = e =>
-      wrap.querySelectorAll('.agree, #agreeMkt').forEach(c=>c.checked=e.target.checked);
-
     // 회원가입
     wrap.querySelector('#paneSignup').onsubmit = async e => {
       e.preventDefault();
       const err = wrap.querySelector('#suErr');
       err.textContent = '';
-      if (!wrap.querySelector('#agreeSvc').checked || !wrap.querySelector('#agreePriv').checked)
+      if (!wrap.querySelector('#agreeSvc').checked || !wrap.querySelector('#agreePriv').checked || !wrap.querySelector('#agreeAge').checked)
         return err.textContent = '필수 약관에 동의해 주세요.';
       try {
         const name = Sec.normalizeName(wrap.querySelector('#suName').value);
@@ -157,6 +162,7 @@ const MLAuth = (() => {
           name,
           pw: await hash(password),
           mkt: wrap.querySelector('#agreeMkt').checked,
+          ageConfirmed: true,
           joined: new Date().toISOString()
         };
         if (!saveUsers(users) || !saveSession({email, name}))
@@ -178,7 +184,7 @@ const MLAuth = (() => {
         if (!isEmail(email)) return err.textContent = '이메일 형식을 확인해 주세요.';
         const users = getUsers();
         const u = users[email];
-        if (!Sec.isPlainObject(u)) return err.textContent = '가입 정보가 없습니다. 회원가입 탭을 이용해 주세요.';
+        if (!Sec.isPlainObject(u)) return err.textContent = '이 기기에 저장된 로컬 계정이 없습니다. 로컬 계정 만들기 탭을 이용해 주세요.';
         if (u.pw !== await hash(wrap.querySelector('#loginPw').value))
           return err.textContent = '비밀번호가 일치하지 않습니다.';
         if (!saveSession({email, name:Sec.normalizeName(u.name)}))
@@ -193,18 +199,52 @@ const MLAuth = (() => {
   }
 
   let modal = null;
+  let lastFocus = null;
+  function focusable(root) {
+    return [...root.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')]
+      .filter(el => !el.closest('.hidden') && el.offsetParent !== null);
+  }
+  function focusFirst() {
+    if (!modal || modal.classList.contains('hidden')) return;
+    const pane = modal.querySelector('.auth-pane:not(.hidden)');
+    const target = pane?.querySelector('input:not([disabled])') || modal.querySelector('.auth-close');
+    if (target) target.focus();
+  }
+  function trapFocus(event) {
+    if (!modal || modal.classList.contains('hidden')) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      close();
+      return;
+    }
+    if (event.key !== 'Tab') return;
+    const items = focusable(modal);
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
   function open(tab){
     if (!modal) modal = injectModal();
+    lastFocus = document.activeElement;
     modal.classList.remove('hidden');
     // 뒤 배경 스크롤 잠금 — 모달 내부만 스크롤되도록
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
     if (tab) modal.querySelector(`.auth-tab[data-tab=${tab}]`).click();
+    window.setTimeout(focusFirst, 0);
   }
   function close(){
     if (modal) modal.classList.add('hidden');
     document.documentElement.style.overflow = '';
     document.body.style.overflow = '';
+    if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
   }
   function logout(){ localStorage.removeItem(SESSION_KEY); notify(); }
   function notify(){ renderHeader(); document.dispatchEvent(new CustomEvent('auth-changed')); }
@@ -219,8 +259,8 @@ const MLAuth = (() => {
     const s = session();
     const label = s ? Sec.escapeHtml(s.name || s.email.split('@')[0]) : '';
     slot.innerHTML = s
-      ? `<span class="auth-hello">${label}님</span> <a href="#" id="logoutBtn">로그아웃</a>`
-      : `<a href="#" id="loginBtn" class="auth-cta">로그인 · 회원가입</a>`;
+      ? `<span class="auth-hello">${label}님</span> <a href="#" id="logoutBtn">로컬 계정 로그아웃</a>`
+      : `<a href="#" id="loginBtn" class="auth-cta">로컬 계정 로그인</a>`;
     const lb = document.getElementById('loginBtn'); if (lb) lb.onclick = e=>{e.preventDefault(); open('login');};
     const lo = document.getElementById('logoutBtn'); if (lo) lo.onclick = e=>{e.preventDefault(); logout();};
   }

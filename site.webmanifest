@@ -1,0 +1,19 @@
+{
+  "name": "운명연구소",
+  "short_name": "운명연구소",
+  "description": "사주, 타로, 신점, 별자리 운세 참고 리딩",
+  "start_url": "/saju-lab/",
+  "scope": "/saju-lab/",
+  "display": "standalone",
+  "background_color": "#0b0d17",
+  "theme_color": "#0b0d17",
+  "lang": "ko-KR",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

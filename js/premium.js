@@ -76,14 +76,14 @@ const PREMIUM = (() => {
     parts.push({ title:`띠 궁합 — ${SAJU.BRANCH_ANIMAL[yA]}띠 ↔ ${SAJU.BRANCH_ANIMAL[yB]}띠`, text: ddi });
 
     score = Math.max(38, Math.min(97, Math.round(score)));
-    const headline = score >= 85 ? '하늘이 맺은 인연에 가까운 궁합' :
+    const headline = score >= 85 ? '전통 해석상 강하게 끌리는 궁합' :
                      score >= 72 ? '노력이 아깝지 않은 좋은 궁합' :
                      score >= 58 ? '서로를 알아갈수록 좋아지는 궁합' :
                                    '다름을 인정하는 것이 숙제인 궁합';
     return { score, headline, parts,
       advice: score >= 72
         ? '궁합이 좋다는 건 "덜 노력해도 된다"가 아니라 "노력의 효율이 높다"는 뜻입니다. 지금의 온도를 아끼지 말고 표현하세요.'
-        : '궁합 점수는 확률이지 판결이 아닙니다. 위에 적힌 마찰 지점을 미리 아는 커플은, 모르는 좋은 궁합 커플보다 오래갑니다.' };
+        : '궁합 점수는 참고 지표이지 판결이 아닙니다. 위에 적힌 마찰 지점을 미리 아는 커플은, 모르는 좋은 궁합 커플보다 오래갑니다.' };
   }
 
   // ═══════════ 월별 운세 (올해 12개월) ═══════════
@@ -163,6 +163,7 @@ const PREMIUM = (() => {
       <div class="prem-wall" id="premWall">
         <div class="prem-badge">PREMIUM</div>
         <h3>프리미엄 질문 리딩</h3>
+        <p class="content-notice small">오락·자기이해용 참고 콘텐츠이며 의료·법률·투자·진로 판단을 대체하지 않습니다.</p>
         <ul class="prem-list">
           <li><strong>재회 시기 · 상대 속마음 · 환승이별 흐름</strong> — 연애 사건별 가능성과 행동 타이밍</li>
           <li><strong>이직운 · 합격운 · 승진운</strong> — 커리어 질문을 점수와 조언으로 정리</li>
@@ -170,39 +171,48 @@ const PREMIUM = (() => {
           <li><strong>인생 타이밍 캘린더</strong> — 변화, 돈, 문서가 강해지는 해를 선별</li>
         </ul>
         <div class="prem-price"><span class="won">9,900원</span> <span class="per">1회 결제 · 평생 이용</span></div>
-        <p class="prem-how">아래 문의로 결제 안내를 받으신 뒤, 전달받은 <strong>이용권 코드</strong>를 입력하면 즉시 열립니다.</p>
+        <div class="prem-legal">
+          <p><strong>결제 전 고지</strong>: 제공 내용, 가격, 이용권 코드 발급 방식, 환불 조건, 고객센터 이메일을 확인한 뒤 결제해 주세요.</p>
+          <p><strong>이용권 발급</strong>: 결제 확인 후 이메일 또는 안내 채널로 UML- 형식의 이용권 코드를 발급합니다. 코드를 등록하면 이 기기 localStorage에 프리미엄 상태가 저장됩니다.</p>
+          <p><strong>환불·청약철회</strong>: 코드 발급 전 또는 미사용 확인 시 환불 가능합니다. 코드 등록 후 즉시 열람되는 디지털 콘텐츠는 단순 변심 환불이 제한될 수 있습니다. 자세한 기준은 <a href="refund.html">환불정책</a>을 확인해 주세요.</p>
+          <p><strong>연령 안내</strong>: 만 14세 미만은 가입·결제가 제한되며, 미성년자는 법정대리인 동의 후 결제해야 합니다.</p>
+          <p><strong>고객센터</strong>: <a href="mailto:ddragonjh@gmail.com">ddragonjh@gmail.com</a></p>
+        </div>
+        <p class="prem-how">결제 안내 후 전달받은 <strong>이용권 코드</strong>를 입력하면 즉시 열립니다.</p>
         <div class="prem-redeem">
-          <input type="text" id="premCode" placeholder="UML-XXXXXXXXXXXXXXXXXXXXXXXX" maxlength="28" inputmode="latin" autocomplete="off" spellcheck="false">
+          <input type="text" id="premCode" aria-label="프리미엄 이용권 코드" placeholder="UML-XXXXXXXXXXXXXXXXXXXXXXXX" maxlength="28" inputmode="latin" autocomplete="off" spellcheck="false">
           <button class="btn-gold" id="premBtn">이용권 등록</button>
         </div>
-        <p class="auth-err" id="premErr"></p>
-        <p class="tag-note">이용권 문의: 채널 프로필의 문의 링크 또는 이메일로 "프리미엄"이라고 보내주세요.</p>
+        <p class="auth-err" id="premErr" aria-live="polite"></p>
+        <p class="tag-note">이용권 문의: <a href="mailto:ddragonjh@gmail.com">ddragonjh@gmail.com</a>로 "프리미엄"이라고 보내주세요.</p>
       </div>`;
     return `
       <div class="r-block prem-open" id="premCompat">
         <h3><span class="ico">💞</span> 겉궁합 · 속궁합 <span class="prem-tag">PREMIUM</span></h3>
+        <p class="content-notice small">오락·자기이해용 참고 콘텐츠이며 의료·법률·투자·진로 판단을 대체하지 않습니다.</p>
         <p class="sec-desc">상대방의 양력 생년월일을 입력하면 띠로 보는 겉궁합과 일주/오행으로 보는 속궁합을 나눠 분석합니다.</p>
         <div class="compat-form">
-          <input type="text" id="cName" placeholder="상대 이름(선택)" maxlength="12">
-          <select id="cYear"></select><select id="cMonth"></select><select id="cDay"></select>
-          <select id="cGender"><option value="M">남자</option><option value="F">여자</option></select>
+          <input type="text" id="cName" aria-label="상대 이름 선택 입력" placeholder="상대 이름(선택)" maxlength="12">
+          <select id="cYear" aria-label="상대 태어난 해"></select><select id="cMonth" aria-label="상대 태어난 월"></select><select id="cDay" aria-label="상대 태어난 일"></select>
+          <select id="cGender" aria-label="상대 성별" required><option value="" selected disabled>성별</option><option value="M">남자</option><option value="F">여자</option></select>
           <button class="btn-gold" id="cBtn">궁합 보기</button>
         </div>
-        <div id="compatResult"></div>
+        <div id="compatResult" aria-live="polite"></div>
       </div>
       <div class="r-block prem-open" id="premQuestions">
         <h3><span class="ico">🔎</span> 프리미엄 질문 리딩 <span class="prem-tag">PREMIUM</span></h3>
+        <p class="content-notice small">오락·자기이해용 참고 콘텐츠이며 의료·법률·투자·진로 판단을 대체하지 않습니다.</p>
         <p class="sec-desc">재회, 속마음, 환승이별, 이직, 합격, 승진처럼 실제로 많이 묻는 질문을 점수화했습니다.</p>
         <div class="premium-question-grid">${questionCards(r)}</div>
       </div>
       <div class="r-block prem-open" id="premTiming">
         <h3><span class="ico">⏳</span> 인생 타이밍 캘린더 <span class="prem-tag">PREMIUM</span></h3>
+        <p class="content-notice small">오락·자기이해용 참고 콘텐츠이며 의료·법률·투자·진로 판단을 대체하지 않습니다.</p>
         <div id="timingBody"></div>
       </div>`;
   }
 
   function bind(r) {
-    window.__lastPremiumResult = r;
     // 이용권 등록
     const pb = document.getElementById('premBtn');
     if (pb) pb.onclick = async () => {
@@ -225,7 +235,7 @@ const PREMIUM = (() => {
     // 궁합 폼
     const cy = document.getElementById('cYear');
     if (!cy) return;
-    for (let y = new Date().getFullYear(); y >= 1930; y--) cy.add(new Option(y + '년', y));
+    for (let y = 2035; y >= 1930; y--) cy.add(new Option(y + '년', y));
     cy.value = 1995;
     const cm = document.getElementById('cMonth'), cd = document.getElementById('cDay');
     for (let m = 1; m <= 12; m++) cm.add(new Option(m + '월', m));
@@ -233,8 +243,13 @@ const PREMIUM = (() => {
     cy.onchange = cm.onchange = fill; fill();
 
     document.getElementById('cBtn').onclick = () => {
+      const gender = document.getElementById('cGender').value;
+      if (!gender) {
+        document.getElementById('compatResult').innerHTML = '<p class="auth-err">상대 성별을 선택해 주세요.</p>';
+        return;
+      }
       const rB = SAJU.compute({ year:+cy.value, month:+cm.value, day:+cd.value, hour:12, minute:0,
-        gender: document.getElementById('cGender').value, unknownTime:true, trueSolar:true });
+        gender, unknownTime:true, trueSolar:false, dayBoundary:'23' });
       const nameA = esc(Sec.normalizeName(r.input.name) || '나');
       const nameB = esc(Sec.normalizeName(document.getElementById('cName').value) || '상대');
       const c = compat(r, rB, nameA, nameB);
