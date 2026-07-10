@@ -4,13 +4,60 @@
    ═══════════════════════════════════════════════════════ */
 const MLAuth = (() => {
   const USERS_KEY = 'ml_users_v1', SESSION_KEY = 'ml_session_v1';
+  const Sec = typeof MLSecurity !== 'undefined' ? MLSecurity : {
+    escapeHtml: v => String(v ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])),
+    normalizeName: v => String(v ?? '').replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, 12),
+    normalizeEmail: v => String(v ?? '').replace(/[\u0000-\u001f\u007f]/g, '').trim().toLowerCase().slice(0, 254),
+    normalizeSession: v => v && typeof v === 'object' && !Array.isArray(v) ? { email:String(v.email ?? '').trim().toLowerCase(), name:String(v.name ?? '').trim().slice(0, 12) } : null,
+    isPlainObject: v => !!v && typeof v === 'object' && !Array.isArray(v),
+    logError: () => {}
+  };
 
-  const getUsers = () => { try { return JSON.parse(localStorage.getItem(USERS_KEY)) || {}; } catch(_) { return {}; } };
-  const saveUsers = u => localStorage.setItem(USERS_KEY, JSON.stringify(u));
-  const session = () => { try { return JSON.parse(localStorage.getItem(SESSION_KEY)); } catch(_) { return null; } };
+  const isEmail = email => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const normalizeCode = code => String(code ?? '').trim().toUpperCase().replace(/\s+/g, '');
+
+  const getUsers = () => {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(USERS_KEY)) || {};
+      return Sec.isPlainObject(parsed) ? parsed : {};
+    } catch(err) {
+      Sec.logError('get-users', err);
+      return {};
+    }
+  };
+  const saveUsers = u => {
+    try {
+      localStorage.setItem(USERS_KEY, JSON.stringify(u));
+      return true;
+    } catch(err) {
+      Sec.logError('save-users', err);
+      return false;
+    }
+  };
+  const session = () => {
+    try {
+      const s = Sec.normalizeSession(JSON.parse(localStorage.getItem(SESSION_KEY)));
+      if (!s || !isEmail(s.email)) return null;
+      return s;
+    } catch(err) {
+      Sec.logError('session', err);
+      return null;
+    }
+  };
+  const saveSession = s => {
+    try {
+      const normalized = Sec.normalizeSession(s);
+      if (!normalized || !isEmail(normalized.email)) return false;
+      localStorage.setItem(SESSION_KEY, JSON.stringify(normalized));
+      return true;
+    } catch(err) {
+      Sec.logError('save-session', err);
+      return false;
+    }
+  };
 
   async function hash(str){
-    if (crypto && crypto.subtle) {
+    if (typeof crypto !== 'undefined' && crypto.subtle) {
       const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('ml-salt::'+str));
       return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
     }
@@ -95,33 +142,52 @@ const MLAuth = (() => {
     wrap.querySelector('#paneSignup').onsubmit = async e => {
       e.preventDefault();
       const err = wrap.querySelector('#suErr');
+      err.textContent = '';
       if (!wrap.querySelector('#agreeSvc').checked || !wrap.querySelector('#agreePriv').checked)
         return err.textContent = '필수 약관에 동의해 주세요.';
-      const email = wrap.querySelector('#suEmail').value.trim().toLowerCase();
-      const users = getUsers();
-      if (users[email]) return err.textContent = '이미 가입된 이메일입니다. 로그인해 주세요.';
-      users[email] = {
-        name: wrap.querySelector('#suName').value.trim(),
-        pw: await hash(wrap.querySelector('#suPw').value),
-        mkt: wrap.querySelector('#agreeMkt').checked,
-        joined: new Date().toISOString()
-      };
-      saveUsers(users);
-      localStorage.setItem(SESSION_KEY, JSON.stringify({email, name:users[email].name}));
-      close(); notify();
+      try {
+        const name = Sec.normalizeName(wrap.querySelector('#suName').value);
+        const email = Sec.normalizeEmail(wrap.querySelector('#suEmail').value);
+        const password = wrap.querySelector('#suPw').value;
+        if (!isEmail(email)) return err.textContent = '이메일 형식을 확인해 주세요.';
+        if (password.length < 6) return err.textContent = '비밀번호는 6자 이상 입력해 주세요.';
+        const users = getUsers();
+        if (users[email]) return err.textContent = '이미 가입된 이메일입니다. 로그인해 주세요.';
+        users[email] = {
+          name,
+          pw: await hash(password),
+          mkt: wrap.querySelector('#agreeMkt').checked,
+          joined: new Date().toISOString()
+        };
+        if (!saveUsers(users) || !saveSession({email, name}))
+          return err.textContent = '브라우저 저장 공간에 계정을 저장하지 못했습니다. 사이트 데이터/저장소 설정을 확인해 주세요.';
+        close(); notify();
+      } catch (error) {
+        Sec.logError('signup', error);
+        err.textContent = '가입 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.';
+      }
     };
 
     // 로그인
     wrap.querySelector('#paneLogin').onsubmit = async e => {
       e.preventDefault();
       const err = wrap.querySelector('#loginErr');
-      const email = wrap.querySelector('#loginEmail').value.trim().toLowerCase();
-      const u = getUsers()[email];
-      if (!u) return err.textContent = '가입 정보가 없습니다. 회원가입 탭을 이용해 주세요.';
-      if (u.pw !== await hash(wrap.querySelector('#loginPw').value))
-        return err.textContent = '비밀번호가 일치하지 않습니다.';
-      localStorage.setItem(SESSION_KEY, JSON.stringify({email, name:u.name}));
-      close(); notify();
+      err.textContent = '';
+      try {
+        const email = Sec.normalizeEmail(wrap.querySelector('#loginEmail').value);
+        if (!isEmail(email)) return err.textContent = '이메일 형식을 확인해 주세요.';
+        const users = getUsers();
+        const u = users[email];
+        if (!Sec.isPlainObject(u)) return err.textContent = '가입 정보가 없습니다. 회원가입 탭을 이용해 주세요.';
+        if (u.pw !== await hash(wrap.querySelector('#loginPw').value))
+          return err.textContent = '비밀번호가 일치하지 않습니다.';
+        if (!saveSession({email, name:Sec.normalizeName(u.name)}))
+          return err.textContent = '브라우저 저장 공간에 로그인 정보를 저장하지 못했습니다.';
+        close(); notify();
+      } catch (error) {
+        Sec.logError('login', error);
+        err.textContent = '로그인 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.';
+      }
     };
     return wrap;
   }
@@ -151,8 +217,9 @@ const MLAuth = (() => {
       document.querySelector('.topnav').appendChild(slot);
     }
     const s = session();
+    const label = s ? Sec.escapeHtml(s.name || s.email.split('@')[0]) : '';
     slot.innerHTML = s
-      ? `<span class="auth-hello">${(s.name||s.email.split('@')[0])}님</span> <a href="#" id="logoutBtn">로그아웃</a>`
+      ? `<span class="auth-hello">${label}님</span> <a href="#" id="logoutBtn">로그아웃</a>`
       : `<a href="#" id="loginBtn" class="auth-cta">로그인 · 회원가입</a>`;
     const lb = document.getElementById('loginBtn'); if (lb) lb.onclick = e=>{e.preventDefault(); open('login');};
     const lo = document.getElementById('logoutBtn'); if (lo) lo.onclick = e=>{e.preventDefault(); logout();};
@@ -163,17 +230,27 @@ const MLAuth = (() => {
   function isPremium(){
     const s = session(); if (!s) return false;
     const u = getUsers()[s.email];
-    return !!(u && u.premium);
+    return !!(Sec.isPlainObject(u) && u.premium);
   }
   async function redeem(code){
-    const s = session(); if (!s || !code) return false;
-    if (typeof PREMIUM_HASHES === 'undefined') return false;
-    const h = await hash(code);
-    if (!PREMIUM_HASHES.includes(h)) return false;
-    const users = getUsers();
-    if (users[s.email]) { users[s.email].premium = true; users[s.email].premiumAt = new Date().toISOString(); saveUsers(users); }
-    notify();
-    return true;
+    try {
+      const s = session(); if (!s) return false;
+      const normalized = normalizeCode(code);
+      if (!/^UML-[A-F0-9]{24}$/.test(normalized)) return false;
+      if (typeof PREMIUM_HASHES === 'undefined' || !Array.isArray(PREMIUM_HASHES)) return false;
+      const h = await hash(normalized);
+      if (!PREMIUM_HASHES.includes(h)) return false;
+      const users = getUsers();
+      if (!Sec.isPlainObject(users[s.email])) return false;
+      users[s.email].premium = true;
+      users[s.email].premiumAt = new Date().toISOString();
+      if (!saveUsers(users)) return false;
+      notify();
+      return true;
+    } catch (error) {
+      Sec.logError('redeem', error);
+      return false;
+    }
   }
 
   return { open, close, logout, isLoggedIn:()=>!!session(), user:session, isPremium, redeem };

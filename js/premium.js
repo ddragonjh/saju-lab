@@ -1,10 +1,16 @@
 /* ═══════════════════════════════════════════════════════
    운명연구소 — 프리미엄 모듈
-   궁합 분석 · 월별 운세 · 인생 타이밍 + 이용권 잠금
+   프리미엄 질문 리딩 · 속궁합 · 관계/커리어 타이밍 + 이용권 잠금
    ═══════════════════════════════════════════════════════ */
 const PREMIUM = (() => {
   const S = SAJU.STEMS, SH = SAJU.STEMS_H, B = SAJU.BRANCHES, BH = SAJU.BRANCHES_H;
   const SE = SAJU.STEM_ELEM;
+  const Sec = typeof MLSecurity !== 'undefined' ? MLSecurity : {
+    escapeHtml: v => String(v ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])),
+    normalizeName: v => String(v ?? '').replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, 12),
+    logError: () => {}
+  };
+  const esc = Sec.escapeHtml;
 
   // ── 지지 관계 테이블 ──
   const YUKHAP = {0:1,1:0,2:11,11:2,3:10,10:3,4:9,9:4,5:8,8:5,6:7,7:6};
@@ -120,21 +126,53 @@ const PREMIUM = (() => {
     return { move: move.slice(0,3), money: money.slice(0,3), doc: doc.slice(0,3) };
   }
 
+  function pct(seed, min = 42, max = 96) {
+    return typeof FORTUNE !== 'undefined' ? FORTUNE.score(seed, min, max) : min + (Math.abs(String(seed).split('').reduce((a,c)=>a+c.charCodeAt(0),0)) % (max-min+1));
+  }
+
+  function premiumQuestions(r) {
+    const key = `${r.input.year}-${r.input.month}-${r.input.day}-${r.dayP.stem}-${r.dayP.branch}`;
+    const love = pct(`${key}-reunion`, 45, 96);
+    const mind = pct(`${key}-mind`, 48, 94);
+    const rebound = pct(`${key}-rebound`, 35, 90);
+    const job = pct(`${key}-job`, 42, 96);
+    const pass = pct(`${key}-pass`, 42, 96);
+    const promo = pct(`${key}-promo`, 42, 96);
+    return [
+      ['재회 시기', love, love >= 78 ? '가까운 3개월 안에 다시 말문이 열릴 수 있습니다. 다만 먼저 감정 확인보다 가벼운 안부가 유리합니다.' : '지금은 바로 붙잡기보다 상대의 생활 리듬이 안정될 때까지 거리를 두는 편이 낫습니다.'],
+      ['상대 속마음', mind, mind >= 76 ? '상대는 완전히 끊었다기보다 마음을 정리하는 중입니다. 자존심을 건드리지 않는 표현이 중요합니다.' : '상대 마음은 아직 방어적입니다. 설득보다 신뢰 회복의 증거가 먼저 필요합니다.'],
+      ['환승이별 흐름', rebound, rebound >= 72 ? '새 관계의 속도는 빠르지만 기반은 흔들릴 수 있습니다. 비교와 추궁은 금물, 본인의 회복을 먼저 잡으세요.' : '상대의 새 흐름에 휘말릴수록 손해입니다. 지금은 내 생활권을 되찾는 것이 운을 돌립니다.'],
+      ['이직운', job, job >= 76 ? '새 조직·새 역할로 이동하는 운이 열립니다. 지원서와 포트폴리오를 바로 갱신하세요.' : '충동 이직보다 조건 비교가 먼저입니다. 현재 자리에서 협상 여지가 남아 있습니다.'],
+      ['합격운', pass, pass >= 76 ? '문서운과 집중운이 받쳐줍니다. 기출 반복과 접수 일정 확인이 점수를 지킵니다.' : '실력보다 실수 관리가 관건입니다. 원서, 날짜, 준비물 체크리스트가 필요합니다.'],
+      ['승진운', promo, promo >= 76 ? '윗사람에게 보이는 일이 성과로 이어집니다. 조용한 공보다 보고되는 결과가 중요합니다.' : '승진운은 준비 단계입니다. 지금은 평판 관리와 업무 기록을 쌓아둘 때입니다.']
+    ];
+  }
+
+  function questionCards(r) {
+    return premiumQuestions(r).map(([title, value, text]) => `
+      <div class="premium-question-card">
+        <div class="score-top"><span>${title}</span><strong>${value}</strong></div>
+        <div class="score-track"><i style="width:${value}%"></i></div>
+        <p>${text}</p>
+      </div>`).join('');
+  }
+
   // ═══════════ UI ═══════════
-  function sectionHtml(isPrem) {
+  function sectionHtml(isPrem, r) {
     if (!isPrem) return `
       <div class="prem-wall" id="premWall">
         <div class="prem-badge">PREMIUM</div>
-        <h3>사주로 이런 것까지 볼 수 있습니다</h3>
+        <h3>프리미엄 질문 리딩</h3>
         <ul class="prem-list">
-          <li>💞 <strong>그 사람과의 궁합</strong> — 두 사람의 생일로 본질·배우자궁·오행·띠 4중 분석 + 궁합 점수</li>
-          <li>📆 <strong>올해 12개월 월별 운세</strong> — 이번 달이 길인지 주의인지, 달마다의 전략</li>
-          <li>⏳ <strong>인생 타이밍 캘린더</strong> — 이직·이사에 좋은 해, 재물이 도는 해, 시험·계약에 좋은 해</li>
+          <li><strong>재회 시기 · 상대 속마음 · 환승이별 흐름</strong> — 연애 사건별 가능성과 행동 타이밍</li>
+          <li><strong>이직운 · 합격운 · 승진운</strong> — 커리어 질문을 점수와 조언으로 정리</li>
+          <li><strong>겉궁합부터 속궁합까지</strong> — 띠궁합, 배우자궁, 일간, 오행 보완을 한 번에 비교</li>
+          <li><strong>인생 타이밍 캘린더</strong> — 변화, 돈, 문서가 강해지는 해를 선별</li>
         </ul>
         <div class="prem-price"><span class="won">9,900원</span> <span class="per">1회 결제 · 평생 이용</span></div>
         <p class="prem-how">아래 문의로 결제 안내를 받으신 뒤, 전달받은 <strong>이용권 코드</strong>를 입력하면 즉시 열립니다.</p>
         <div class="prem-redeem">
-          <input type="text" id="premCode" placeholder="UML-XXXXXXXX" maxlength="14">
+          <input type="text" id="premCode" placeholder="UML-XXXXXXXXXXXXXXXXXXXXXXXX" maxlength="28" inputmode="latin" autocomplete="off" spellcheck="false">
           <button class="btn-gold" id="premBtn">이용권 등록</button>
         </div>
         <p class="auth-err" id="premErr"></p>
@@ -142,8 +180,8 @@ const PREMIUM = (() => {
       </div>`;
     return `
       <div class="r-block prem-open" id="premCompat">
-        <h3><span class="ico">💞</span> 그 사람과의 궁합 <span class="prem-tag">PREMIUM</span></h3>
-        <p class="sec-desc">상대방의 양력 생년월일을 입력하면 두 사주를 겹쳐 분석합니다.</p>
+        <h3><span class="ico">💞</span> 겉궁합 · 속궁합 <span class="prem-tag">PREMIUM</span></h3>
+        <p class="sec-desc">상대방의 양력 생년월일을 입력하면 띠로 보는 겉궁합과 일주/오행으로 보는 속궁합을 나눠 분석합니다.</p>
         <div class="compat-form">
           <input type="text" id="cName" placeholder="상대 이름(선택)" maxlength="12">
           <select id="cYear"></select><select id="cMonth"></select><select id="cDay"></select>
@@ -152,9 +190,10 @@ const PREMIUM = (() => {
         </div>
         <div id="compatResult"></div>
       </div>
-      <div class="r-block prem-open" id="premMonthly">
-        <h3><span class="ico">📆</span> 올해 12개월 월별 운세 <span class="prem-tag">PREMIUM</span></h3>
-        <div id="monthlyBody"></div>
+      <div class="r-block prem-open" id="premQuestions">
+        <h3><span class="ico">🔎</span> 프리미엄 질문 리딩 <span class="prem-tag">PREMIUM</span></h3>
+        <p class="sec-desc">재회, 속마음, 환승이별, 이직, 합격, 승진처럼 실제로 많이 묻는 질문을 점수화했습니다.</p>
+        <div class="premium-question-grid">${questionCards(r)}</div>
       </div>
       <div class="r-block prem-open" id="premTiming">
         <h3><span class="ico">⏳</span> 인생 타이밍 캘린더 <span class="prem-tag">PREMIUM</span></h3>
@@ -163,19 +202,30 @@ const PREMIUM = (() => {
   }
 
   function bind(r) {
+    window.__lastPremiumResult = r;
     // 이용권 등록
     const pb = document.getElementById('premBtn');
     if (pb) pb.onclick = async () => {
       const err = document.getElementById('premErr');
+      err.textContent = '';
       if (!MLAuth.isLoggedIn()) { MLAuth.open('signup'); return; }
-      const ok = await MLAuth.redeem(document.getElementById('premCode').value.trim().toUpperCase());
-      if (!ok) err.textContent = '유효하지 않은 코드입니다. 코드를 다시 확인해 주세요.';
+      try {
+        pb.disabled = true;
+        const code = document.getElementById('premCode').value.trim().toUpperCase();
+        const ok = await MLAuth.redeem(code);
+        if (!ok) err.textContent = '유효하지 않은 코드입니다. 코드를 다시 확인해 주세요.';
+      } catch (error) {
+        Sec.logError('premium-redeem', error);
+        err.textContent = '이용권 확인 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.';
+      } finally {
+        pb.disabled = false;
+      }
     };
 
     // 궁합 폼
     const cy = document.getElementById('cYear');
     if (!cy) return;
-    for (let y = 2025; y >= 1930; y--) cy.add(new Option(y + '년', y));
+    for (let y = new Date().getFullYear(); y >= 1930; y--) cy.add(new Option(y + '년', y));
     cy.value = 1995;
     const cm = document.getElementById('cMonth'), cd = document.getElementById('cDay');
     for (let m = 1; m <= 12; m++) cm.add(new Option(m + '월', m));
@@ -185,25 +235,21 @@ const PREMIUM = (() => {
     document.getElementById('cBtn').onclick = () => {
       const rB = SAJU.compute({ year:+cy.value, month:+cm.value, day:+cd.value, hour:12, minute:0,
         gender: document.getElementById('cGender').value, unknownTime:true, trueSolar:true });
-      const nameA = r.input.name || '나', nameB = document.getElementById('cName').value.trim() || '상대';
+      const nameA = esc(Sec.normalizeName(r.input.name) || '나');
+      const nameB = esc(Sec.normalizeName(document.getElementById('cName').value) || '상대');
       const c = compat(r, rB, nameA, nameB);
+      const outerScore = pct(`${r.yearP.branch}-${rB.yearP.branch}-outer`, 42, 96);
+      const innerScore = Math.round((c.score + pct(`${r.dayP.stem}-${rB.dayP.stem}-inner`, 45, 96)) / 2);
       document.getElementById('compatResult').innerHTML = `
-        <div class="compat-score"><div class="num">${c.score}<small>점</small></div><div class="head">${c.headline}</div></div>
+        <div class="compat-duo">
+          <div class="compat-score"><div class="num">${outerScore}<small>점</small></div><div class="head">겉궁합: 띠와 생활 리듬</div></div>
+          <div class="compat-score"><div class="num">${innerScore}<small>점</small></div><div class="head">속궁합: 일주와 오행 보완</div></div>
+        </div>
+        <div class="hl"><strong>종합 ${c.score}점</strong> — ${c.headline}</div>
         ${c.parts.map(p=>`<h4>◈ ${p.title}</h4><p>${p.text}</p>`).join('')}
         <div class="hl">${c.advice}</div>
         <p class="tag-note">* 상대의 태어난 시간까지 알면 더 정밀해집니다. 본 궁합은 삼주(년월일) 기준입니다.</p>`;
     };
-
-    // 월별 운세
-    const mb = document.getElementById('monthlyBody');
-    if (mb) {
-      const m = monthly(r);
-      mb.innerHTML = `<p class="sec-desc">${m.year}년, 절기 기준 월운입니다. (각 달은 절입일부터 시작)</p>
-        <div class="month-grid">${m.months.map(x=>`
-          <div class="month-cell g-${x.grade}"><div class="m-label">${x.label} <span>${x.gz}</span></div>
-          <div class="m-grade">${x.grade === '길' ? '🌕 길' : x.grade === '활' ? '🌗 변화' : x.grade === '주의' ? '🌑 주의' : '🌘 보통'}</div>
-          <div class="m-txt">${x.god} —${x.txt}</div></div>`).join('')}</div>`;
-    }
 
     // 타이밍
     const tb = document.getElementById('timingBody');

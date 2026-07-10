@@ -3,11 +3,51 @@
    ═══════════════════════════════════════════════════════ */
 (() => {
   const $ = s => document.querySelector(s);
+  const Sec = typeof MLSecurity !== 'undefined' ? MLSecurity : {
+    escapeHtml: v => String(v ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])),
+    normalizeName: v => String(v ?? '').replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, 12),
+    percent: v => Math.max(0, Math.min(100, Number(v) || 0)),
+    logError: () => {}
+  };
+  const esc = Sec.escapeHtml;
+  const motionQuery = '.panel, .about-card, details, .r-head, .r-block, .pillar, .daeun-cell, .yearcell, .prem-wall, .month-cell, .compat-score, .lock-cta, .service-card, .oracle-hub, .score-card, .period-card, .tarot-mini-card';
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let motionObserver = null;
+
+  function getMotionObserver() {
+    if (motionObserver || reduceMotion || !('IntersectionObserver' in window)) return motionObserver;
+    motionObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('in-view');
+        motionObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    return motionObserver;
+  }
+
+  function mountMotion(root = document) {
+    const base = root instanceof Element && root.matches(motionQuery) ? [root] : [];
+    const items = base.concat([...root.querySelectorAll(motionQuery)]);
+    const observer = getMotionObserver();
+    items.forEach((el, index) => {
+      if (el.dataset.motionBound) return;
+      el.dataset.motionBound = '1';
+      if (reduceMotion || !observer) {
+        el.classList.add('in-view');
+        return;
+      }
+      el.classList.add('motion-item');
+      el.style.transitionDelay = `${Math.min(index % 8, 7) * 45}ms`;
+      observer.observe(el);
+    });
+  }
 
   // ── 폼 초기화 ──
   const yearSel = $('#inYear'), monthSel = $('#inMonth'), daySel = $('#inDay');
   const hourSel = $('#inHour'), minSel = $('#inMin');
-  for (let y=2025; y>=1930; y--) yearSel.add(new Option(y+'년', y));
+  const thisYear = new Date().getFullYear();
+  for (let y=thisYear; y>=1930; y--) yearSel.add(new Option(y+'년', y));
   yearSel.value = 1995;
   for (let m=1; m<=12; m++) monthSel.add(new Option(m+'월', m));
   function fillDays(){
@@ -26,18 +66,24 @@
   let lastResult = null;
   $('#sajuForm').addEventListener('submit', e => {
     e.preventDefault();
-    const o = {
-      name: $('#inName').value.trim(),
-      gender: document.querySelector('input[name=gender]:checked').value,
-      year:+yearSel.value, month:+monthSel.value, day:+daySel.value,
-      hour:+hourSel.value, minute:+minSel.value,
-      unknownTime: $('#unknownTime').checked,
-      trueSolar: $('#trueSolar').checked
-    };
-    lastResult = SAJU.compute(o);
-    render(lastResult);
-    $('#result').classList.remove('hidden');
-    $('#result').scrollIntoView({behavior:'smooth'});
+    try {
+      const o = {
+        name: Sec.normalizeName($('#inName').value),
+        gender: document.querySelector('input[name=gender]:checked').value,
+        year:+yearSel.value, month:+monthSel.value, day:+daySel.value,
+        hour:+hourSel.value, minute:+minSel.value,
+        unknownTime: $('#unknownTime').checked,
+        trueSolar: $('#trueSolar').checked
+      };
+      lastResult = SAJU.compute(o);
+      render(lastResult);
+      $('#result').classList.remove('hidden');
+      $('#result').scrollIntoView({behavior:'smooth'});
+    } catch (err) {
+      Sec.logError('saju-submit', err);
+      lastResult = null;
+      renderError('사주 계산 중 문제가 발생했습니다. 입력값을 확인한 뒤 다시 시도해 주세요.');
+    }
   });
 
   // 로그인/가입 완료 시 잠금 해제 재렌더링
@@ -49,6 +95,17 @@
   const S=SAJU.STEMS, SH=SAJU.STEMS_H, B=SAJU.BRANCHES, BH=SAJU.BRANCHES_H;
   const SE=SAJU.STEM_ELEM, BE=SAJU.BRANCH_ELEM;
   const ELEM_H = {목:'木',화:'火',토:'土',금:'金',수:'水'};
+
+  function renderError(message) {
+    const result = $('#result');
+    result.innerHTML = `
+      <div class="r-block">
+        <h3><span class="ico">!</span> 계산 오류</h3>
+        <p>${esc(message)}</p>
+      </div>`;
+    result.classList.remove('hidden');
+    result.scrollIntoView({behavior:'smooth'});
+  }
 
   function pillarCard(p, label, dayStem, isDay){
     if(!p) return `<div class="pillar"><div class="p-label">${label}</div><div class="p-char" style="opacity:.3"><span class="h">?</span></div><div class="p-ten">시간 미상</div></div>`;
@@ -68,7 +125,8 @@
 
   function render(r){
     const o=r.input, dm=r.dayMaster;
-    const who = o.name ? o.name+'님' : '당신';
+    const whoText = o.name ? Sec.normalizeName(o.name)+'님' : '당신';
+    const who = esc(whoText);
     const genderTxt = o.gender==='M'?'남자':'여자';
     const timeTxt = o.unknownTime?'시간 미상':`${String(o.hour).padStart(2,'0')}:${String(o.minute).padStart(2,'0')}`;
     const iljuName = S[r.dayP.stem]+B[r.dayP.branch];
@@ -81,7 +139,7 @@
     const sorted = Object.entries(r.elemCount).sort((a,b)=>b[1]-a[1]);
     const strongest = sorted[0][0], weakest = sorted[4][0];
     const elemBars = SAJU.ELEMS.map(el=>{
-      const v = r.elemCount[el], pct = Math.round(v/total*100);
+      const v = r.elemCount[el], pct = Sec.percent(Math.round(v/total*100));
       return `<div class="ebar"><span class="badge e-${el}">${el}</span><div class="track"><div class="fill f-${el}" style="width:${pct}%"></div></div><span class="cnt">${v.toFixed(1)}</span></div>`;
     }).join('');
 
@@ -197,6 +255,8 @@
         <div class="hl">💰 ${plus.money}</div>
       </div>
 
+      ${typeof FORTUNE !== 'undefined' ? FORTUNE.sectionHtml(r) : ''}
+
       ${lock(`<div class="r-block">
         <h3><span class="ico">♥</span> 연애 · 결혼 — 인연의 흐름</h3>
         <p>${plus.love}</p>
@@ -245,7 +305,7 @@
         ${sinsalHtml}
       </div>`)}
 
-      ${PREMIUM.sectionHtml(typeof MLAuth !== 'undefined' && MLAuth.isPremium())}
+      ${PREMIUM.sectionHtml(typeof MLAuth !== 'undefined' && MLAuth.isPremium(), r)}
 
       ${loggedIn ? '' : `<div class="lock-cta">
         <p><strong>여기서부터는 회원 전용 심층 해석입니다.</strong></p>
@@ -263,14 +323,20 @@
     if (unlock) unlock.onclick = () => MLAuth.open('signup');
 
     PREMIUM.bind(r);
+    if (typeof FORTUNE !== 'undefined') FORTUNE.bind(r);
+    mountMotion($('#result'));
 
     const share = $('#shareBtn');
     if (share) share.onclick = async () => {
-      const txt = `${who}의 사주 — 일주 ${iljuName}, ${yearName}년 ${animal}띠. 운명연구소에서 심층 해석을 받아보세요.`;
+      const txt = `${whoText}의 사주 — 일주 ${iljuName}, ${yearName}년 ${animal}띠. 운명연구소에서 심층 해석을 받아보세요.`;
       try {
         if (navigator.share) await navigator.share({title:'운명연구소 사주 해석', text:txt, url:location.href});
         else { await navigator.clipboard.writeText(txt+' '+location.href); share.textContent='링크 복사 완료!'; }
-      } catch(_) {}
+      } catch(err) {
+        Sec.logError('share', err);
+      }
     };
   }
+
+  mountMotion(document);
 })();
