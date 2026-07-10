@@ -126,7 +126,7 @@ main{position:relative;z-index:1;max-width:1060px;margin:0 auto;padding:0 22px 8
 @keyframes pulseRing{0%,100%{transform:scale(1);opacity:.44}50%{transform:scale(1.035);opacity:.85}}
 @keyframes goldSweep{0%,100%{opacity:.7;transform:scaleX(.94)}50%{opacity:1;transform:scaleX(1)}}
 
-.service-deck{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:-34px 0 34px;position:relative;z-index:2}
+.service-deck{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:-34px 0 34px;position:relative;z-index:2}
 .service-card{display:block;text-decoration:none;color:var(--ink);background:linear-gradient(180deg,rgba(255,255,255,.062),rgba(255,255,255,.026));border:1px solid var(--panel-line);border-radius:var(--radius);padding:24px 22px;min-height:178px;position:relative;overflow:hidden;box-shadow:0 22px 62px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.05);transition:transform .25s,border-color .25s,box-shadow .25s}
 .service-card::before{content:"";position:absolute;inset:0;background:radial-gradient(360px 180px at 20% 0%,rgba(232,207,154,.14),transparent 58%);pointer-events:none}
 .service-card:hover{transform:translateY(-6px);border-color:var(--panel-line-strong);box-shadow:0 30px 80px rgba(0,0,0,.42),var(--shadow-gold)}
@@ -135,6 +135,7 @@ main{position:relative;z-index:1;max-width:1060px;margin:0 auto;padding:0 22px 8
 .service-mark{position:relative;display:inline-flex;border:1px solid rgba(232,207,154,.34);border-radius:999px;padding:4px 12px;color:var(--gold);font-size:.8rem;background:rgba(255,255,255,.035)}
 .tarot-card::before{background:radial-gradient(360px 180px at 20% 0%,rgba(141,106,184,.18),transparent 58%)}
 .oracle-card::before{background:radial-gradient(360px 180px at 20% 0%,rgba(97,194,173,.14),transparent 58%)}
+.zodiac-card::before{background:radial-gradient(360px 180px at 20% 0%,rgba(232,207,154,.16),transparent 58%)}
 
 /* ── buttons ── */
 .btn-gold{display:inline-block;background:linear-gradient(135deg,#f0d58e 0%,#c69b50 45%,#8f6d36 100%);color:#171204;font-weight:800;text-decoration:none;border:none;border-radius:999px;cursor:pointer;font-family:var(--sans);transition:transform .18s,box-shadow .22s,filter .22s;box-shadow:0 12px 34px rgba(201,168,106,.28),inset 0 1px 0 rgba(255,255,255,.38);position:relative;overflow:hidden}
@@ -281,7 +282,7 @@ main{position:relative;z-index:1;max-width:1060px;margin:0 auto;padding:0 22px 8
 .intent-chip:hover,.intent-chip.active{transform:translateY(-2px);background:linear-gradient(135deg,#e5c779,#b8914c);border-color:transparent;color:#171204}
 .tarot-table{background:linear-gradient(160deg,rgba(141,106,184,.13),rgba(201,168,106,.07),rgba(97,194,173,.06));border:1px solid var(--panel-line);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
 .tarot-table::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(125deg,transparent 0 28px,rgba(255,255,255,.034) 28px 29px,transparent 29px 62px);pointer-events:none}
-.tarot-stage{min-height:284px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:radial-gradient(360px 220px at 50% 42%,rgba(232,207,154,.16),transparent 64%),rgba(11,13,23,.46);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+.tarot-stage{min-height:230px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:radial-gradient(360px 220px at 50% 42%,rgba(232,207,154,.16),transparent 64%),rgba(11,13,23,.46);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
 .deck-stack{position:relative;width:136px;height:198px;transform:rotate(-4deg)}
 .deck-stack span,.motion-card{position:absolute;inset:0;border-radius:14px;border:1px solid rgba(232,207,154,.46);background:
   linear-gradient(135deg,rgba(232,207,154,.18),rgba(141,106,184,.22)),
@@ -299,13 +300,46 @@ main{position:relative;z-index:1;max-width:1060px;margin:0 auto;padding:0 22px 8
 .tarot-stage.is-drawing .motion-two{animation:cardFlyCenter 1.12s .08s cubic-bezier(.2,.8,.2,1) forwards}
 .tarot-stage.is-drawing .motion-three{animation:cardFlyRight 1.12s .16s cubic-bezier(.2,.8,.2,1) forwards}
 .tarot-stage.is-settled .deck-stack{transform:scale(.88) rotate(-2deg);opacity:.42}
+.tarot-pick-status{position:relative;z-index:1;text-align:center;color:var(--gold-bright);font-family:var(--serif);font-weight:700;margin:0 0 12px}
+.tarot-pick-grid{position:relative;z-index:1;display:flex;align-items:flex-start;min-height:174px;overflow-x:auto;overflow-y:hidden;padding:16px 12px 20px;scrollbar-color:rgba(232,207,154,.42) rgba(255,255,255,.05)}
+.tarot-pick-grid:empty{display:none}
+.tarot-choice-card{flex:0 0 94px;height:148px;margin-left:-34px;border:none;background:transparent;padding:0;cursor:pointer;position:relative;transform:translateY(18px) rotate(var(--tilt,-4deg));transition:transform .22s,filter .22s;animation:cardSpread .52s ease both}
+.tarot-choice-card:first-child{margin-left:0}
+.tarot-choice-card:nth-child(3n+1){--tilt:-8deg}.tarot-choice-card:nth-child(3n+2){--tilt:1deg}.tarot-choice-card:nth-child(3n){--tilt:7deg}
+.tarot-choice-card:hover{transform:translateY(0) rotate(0deg);z-index:5;filter:brightness(1.14)}
+.tarot-choice-card.selected{transform:translateY(-14px) rotate(0deg);z-index:6;filter:brightness(1.22)}
+.tarot-choice-card:disabled{cursor:default}
+.pick-order{position:absolute;right:-2px;top:-8px;z-index:4;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f0d58e,#b8914c);color:#171204;font-weight:900;font-size:.82rem;box-shadow:0 8px 20px rgba(0,0,0,.35)}
+.pick-order:empty{display:none}
+.tarot-card-back{position:absolute;inset:0;border-radius:13px;border:1px solid rgba(232,207,154,.58);background:
+  radial-gradient(circle at 50% 36%,rgba(232,207,154,.2),transparent 34%),
+  linear-gradient(145deg,rgba(27,21,45,.96),rgba(14,25,35,.96)),
+  repeating-linear-gradient(45deg,rgba(255,255,255,.07) 0 1px,transparent 1px 13px);
+  box-shadow:0 18px 40px rgba(0,0,0,.38),inset 0 0 0 5px rgba(11,13,23,.74),inset 0 0 0 7px rgba(232,207,154,.2);overflow:hidden}
+.tarot-card-back::before{content:"";position:absolute;inset:14px;border:1px solid rgba(232,207,154,.34);border-radius:9px}
+.tarot-card-back::after{content:"";position:absolute;inset:29px;border-radius:50%;border:1px dashed rgba(97,194,173,.38);box-shadow:0 0 18px rgba(97,194,173,.14)}
+.back-corner{position:absolute;color:rgba(232,207,154,.74);font-style:normal;font-size:.72rem;font-family:var(--serif);z-index:2}
+.top-left{left:9px;top:7px}.top-right{right:9px;top:7px}.bottom-left{left:9px;bottom:7px}.bottom-right{right:9px;bottom:7px}
+.back-orbit{position:absolute;left:50%;top:50%;width:54px;height:54px;border-radius:50%;border:1px solid rgba(216,131,120,.28);transform:translate(-50%,-50%);z-index:1}
+.back-sigil{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:var(--serif);font-size:2.15rem;color:var(--gold-bright);z-index:2;text-shadow:0 0 18px rgba(232,207,154,.32)}
+.back-constellation{position:absolute;left:18px;right:18px;bottom:25px;height:32px;z-index:2}
+.back-constellation::before,.back-constellation::after{content:"";position:absolute;height:1px;background:linear-gradient(90deg,transparent,rgba(232,207,154,.54),transparent);transform-origin:left center}
+.back-constellation::before{left:14px;right:18px;top:15px;transform:rotate(-14deg)}
+.back-constellation::after{left:28px;right:6px;top:20px;transform:rotate(18deg)}
+.back-constellation i{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--gold-bright);box-shadow:0 0 10px rgba(232,207,154,.8)}
+.back-constellation i:nth-child(1){left:6px;top:20px}.back-constellation i:nth-child(2){left:24px;top:10px}.back-constellation i:nth-child(3){left:43px;top:17px}.back-constellation i:nth-child(4){left:57px;top:6px}.back-constellation i:nth-child(5){right:5px;top:24px}
 .tarot-slots{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .tarot-slot{min-height:196px;border:1px dashed rgba(232,207,154,.24);border-radius:12px;background:rgba(11,13,23,.32);padding:12px;display:flex;align-items:center;justify-content:center;text-align:center;position:relative}
 .tarot-slot.empty span{color:var(--dim);font-size:.86rem}
 .tarot-slot-card{border-style:solid;animation:cardReveal .55s ease both}
 .tarot-slot-card > span{position:absolute;transform:translateY(-92px);color:var(--gold);font-size:.78rem}
-.tarot-card-face{width:100%;height:168px;border-radius:11px;border:1px solid rgba(232,207,154,.48);background:linear-gradient(160deg,rgba(232,207,154,.17),rgba(97,194,173,.08),rgba(141,106,184,.18)),#121525;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
+.tarot-card-face{width:100%;height:168px;border-radius:11px;border:1px solid rgba(232,207,154,.5);background:
+  radial-gradient(circle at 50% 34%,rgba(232,207,154,.19),transparent 35%),
+  linear-gradient(160deg,rgba(232,207,154,.17),rgba(97,194,173,.08),rgba(141,106,184,.18)),
+  #121525;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04),inset 0 0 0 7px rgba(11,13,23,.46);position:relative;overflow:hidden}
+.tarot-card-face::before{content:"";position:absolute;inset:13px;border:1px solid rgba(232,207,154,.28);border-radius:9px}
 .tarot-card-face small{font-family:var(--serif);color:var(--gold);font-size:.86rem}
+.face-sigil{font-family:var(--serif);font-size:2.35rem;line-height:1;color:var(--gold-bright);text-shadow:0 0 22px rgba(232,207,154,.32);font-weight:700}
 .tarot-card-face strong{font-family:var(--serif);font-size:1.34rem;color:var(--gold-bright)}
 .tarot-card-face em{font-style:normal;color:var(--dim);font-size:.78rem}
 .tarot-card-face.reversed{border-color:rgba(216,131,120,.54);background:linear-gradient(160deg,rgba(216,131,120,.14),rgba(141,106,184,.16),rgba(232,207,154,.08)),#121525}
@@ -314,10 +348,11 @@ main{position:relative;z-index:1;max-width:1060px;margin:0 auto;padding:0 22px 8
 .tarot-result-card{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.018)),var(--bg-2);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:18px;min-height:220px}
 .tarot-result-card span{color:var(--gold);font-size:.82rem}
 .tarot-result-card h3{font-family:var(--serif);color:var(--gold-bright);margin:8px 0}
+.tarot-result-card h3 b{color:var(--gold);font-weight:700;margin-right:4px}
 .tarot-result-card h3 small{color:var(--dim);font-family:var(--sans);font-size:.74rem}
 .tarot-result-card p{color:#cfccc2;font-size:.92rem}
 .tarot-result-card .tarot-keys{color:var(--jade);font-size:.82rem;margin-bottom:8px}
-.service-deck.compact{grid-template-columns:repeat(2,1fr);margin:0}
+.service-deck.compact{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin:0}
 .oracle-table{background:linear-gradient(160deg,rgba(97,194,173,.12),rgba(201,168,106,.08),rgba(141,106,184,.08));border:1px solid var(--panel-line);border-radius:var(--radius);padding:32px;min-height:520px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
 .oracle-table::before{content:"";position:absolute;inset:0;background:radial-gradient(440px 240px at 50% 42%,rgba(97,194,173,.16),transparent 64%),repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.03) 38px 39px,transparent 39px 78px);pointer-events:none}
 .oracle-gate{width:min(78vw,360px);aspect-ratio:1;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(232,207,154,.12),rgba(11,13,23,.12) 42%,transparent 70%);isolation:isolate}
@@ -336,12 +371,37 @@ main{position:relative;z-index:1;max-width:1060px;margin:0 auto;padding:0 22px 8
 .oracle-message.large{padding:30px;margin-bottom:14px}
 .oracle-message.large strong{font-size:1.58rem;line-height:1.5}
 .oracle-detail-grid{grid-template-columns:repeat(3,1fr)}
+.zodiac-select-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:26px}
+.zodiac-button{border:1px solid var(--panel-line);background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.018));border-radius:10px;padding:13px 10px;color:var(--ink);font-family:var(--sans);cursor:pointer;text-align:left;transition:transform .2s,border-color .2s,box-shadow .2s}
+.zodiac-button:hover,.zodiac-button.active{transform:translateY(-3px);border-color:var(--panel-line-strong);box-shadow:0 18px 42px rgba(0,0,0,.26),0 0 24px rgba(232,207,154,.1)}
+.zodiac-button b{font-family:var(--serif);font-size:1.45rem;color:var(--gold-bright);display:block}
+.zodiac-button span{display:block;font-weight:800;margin-top:3px}
+.zodiac-button small{display:block;color:var(--dim);font-size:.74rem;margin-top:2px}
+.zodiac-sky{background:linear-gradient(160deg,rgba(232,207,154,.1),rgba(97,194,173,.07),rgba(141,106,184,.1));border:1px solid var(--panel-line);border-radius:var(--radius);min-height:520px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;box-shadow:var(--shadow-lg)}
+.zodiac-sky::before{content:"";position:absolute;inset:0;background:
+  radial-gradient(2px 2px at 22% 20%,rgba(232,207,154,.8),transparent),
+  radial-gradient(1px 1px at 66% 18%,rgba(255,255,255,.7),transparent),
+  radial-gradient(2px 2px at 80% 62%,rgba(97,194,173,.7),transparent),
+  radial-gradient(1px 1px at 30% 72%,rgba(255,255,255,.6),transparent),
+  repeating-linear-gradient(120deg,transparent 0 26px,rgba(255,255,255,.03) 26px 27px,transparent 27px 58px);pointer-events:none}
+.zodiac-orbit{position:absolute;border-radius:50%;border:1px solid rgba(232,207,154,.26)}
+.orbit-a{width:78%;aspect-ratio:1;animation:spinSlow 70s linear infinite}
+.orbit-b{width:58%;aspect-ratio:1;border-color:rgba(97,194,173,.32);border-style:dashed;animation:spinSlow 48s linear infinite reverse}
+.orbit-c{width:38%;aspect-ratio:1;border-color:rgba(216,131,120,.24);animation:pulseRing 5.6s ease-in-out infinite}
+.zodiac-sky strong{font-family:var(--serif);font-size:8rem;line-height:1;color:var(--gold-bright);text-shadow:0 0 42px rgba(232,207,154,.34);position:relative;z-index:1}
+.zodiac-sky p{position:relative;z-index:1;font-family:var(--serif);font-size:1.45rem;color:var(--ink);margin-top:10px}
+.zodiac-reading-panel{animation:fadeUp .55s ease}
 @keyframes gateLift{0%{transform:scale(.92);filter:brightness(.9)}45%{transform:scale(1.04);filter:brightness(1.35)}100%{transform:scale(1);filter:brightness(1)}}
 @keyframes deckShuffle{0%,100%{transform:rotate(-4deg) translateX(0)}25%{transform:rotate(3deg) translateX(-8px)}50%{transform:rotate(-2deg) translateX(8px)}75%{transform:rotate(4deg) translateX(-4px)}}
 @keyframes cardFlyLeft{0%{opacity:0;transform:translate(0,0) rotate(-4deg) scale(.72)}18%{opacity:1}100%{opacity:1;transform:translate(-198px,20px) rotate(-11deg) scale(.82)}}
 @keyframes cardFlyCenter{0%{opacity:0;transform:translate(0,0) rotate(2deg) scale(.72)}18%{opacity:1}100%{opacity:1;transform:translate(0,-4px) rotate(1deg) scale(.82)}}
 @keyframes cardFlyRight{0%{opacity:0;transform:translate(0,0) rotate(5deg) scale(.72)}18%{opacity:1}100%{opacity:1;transform:translate(198px,20px) rotate(11deg) scale(.82)}}
+@keyframes cardSpread{from{opacity:0;transform:translateY(42px) rotate(-14deg)}to{opacity:1;transform:translateY(18px) rotate(var(--tilt,-4deg))}}
 @keyframes cardReveal{from{opacity:0;transform:translateY(16px) rotateY(70deg)}to{opacity:1;transform:none}}
+
+@media(max-width:920px){
+  .service-deck{grid-template-columns:repeat(2,1fr)}
+}
 
 /* daeun timeline */
 .daeun-scroll{overflow-x:auto;padding-bottom:8px}
@@ -482,12 +542,19 @@ details p{color:var(--dim);font-size:.92rem;margin-top:10px;animation:fadeUp .28
   .tarot-table,.oracle-table{padding:20px;min-height:auto}
   .tarot-stage{min-height:250px}
   .tarot-slots,.tarot-result-grid,.service-deck.compact,.oracle-detail-grid{grid-template-columns:1fr}
+  .tarot-pick-grid{min-height:150px;padding:12px 4px 18px}
+  .tarot-choice-card{flex-basis:78px;height:126px;margin-left:-24px}
+  .back-sigil{font-size:1.72rem}
+  .back-constellation{left:13px;right:13px;bottom:20px}
   .deck-stack{width:112px;height:164px}
   .motion-card{width:112px;height:164px;left:calc(50% - 56px);top:calc(50% - 82px)}
   .tarot-card-face{height:154px}
   .tarot-slot-card > span{position:static;display:block;transform:none;margin-bottom:8px}
   .oracle-gate{width:min(76vw,300px)}
   .oracle-gate strong{font-size:4.8rem}
+  .zodiac-select-grid{grid-template-columns:repeat(2,1fr)}
+  .zodiac-sky{min-height:340px}
+  .zodiac-sky strong{font-size:5.4rem}
   .compat-form{grid-template-columns:1fr 1fr}
   .compat-score{margin:0;padding:16px}
   .prem-redeem{flex-direction:column}
@@ -516,6 +583,7 @@ details p{color:var(--dim);font-size:.92rem;margin-top:10px;animation:fadeUp .28
   .sec-title{font-size:1.34rem}
   .btn-lg{width:100%;padding:14px 22px}
   .score-grid,.premium-question-grid,.period-grid{grid-template-columns:1fr}
+  .zodiac-select-grid{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}

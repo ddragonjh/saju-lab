@@ -154,6 +154,7 @@ const FORTUNE = (() => {
         <div class="reader-link-row">
           <a class="btn-ghost" href="tarot.html">타로 리딩관</a>
           <a class="btn-ghost" href="sinjeom.html">신점 리딩관</a>
+          <a class="btn-ghost" href="zodiac.html">별자리 리딩관</a>
         </div>
       </section>`;
   }
