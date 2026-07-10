@@ -1,4 +1,4 @@
-/* 운명연구소 — 무료 사주/타로/신점 운세 센터 */
+/* 운명연구소 — 사주 결과 안의 무료 운세 요약 */
 const FORTUNE = (() => {
   const Sec = typeof MLSecurity !== 'undefined' ? MLSecurity : {
     escapeHtml: v => String(v ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])),
@@ -130,60 +130,35 @@ const FORTUNE = (() => {
     return `
       <section class="oracle-hub" id="oracleHub">
         <div class="hub-head">
-          <p class="hub-eyebrow">무료 운세 센터</p>
-          <h3>운명연구소 리딩관</h3>
-          <p>사주, 타로, 신점을 분리해서 보고 마지막에는 점수로 한눈에 확인합니다.</p>
-        </div>
-        <div class="hub-tabs" role="tablist" aria-label="무료 리딩 종류">
-          <button class="hub-tab active" data-hub="saju">사주</button>
-          <button class="hub-tab" data-hub="tarot">타로</button>
-          <button class="hub-tab" data-hub="oracle">신점</button>
+          <p class="hub-eyebrow">사주 무료 운세</p>
+          <h3>오늘 · 이주 · 이달 흐름</h3>
+          <p>입력한 사주를 기준으로 별자리와 기간별 운세를 점수로 정리합니다.</p>
         </div>
 
-        <div class="hub-pane active" data-pane="saju">
-          <div class="fortune-hero">
-            <div>
-              <span class="fortune-kicker">${esc(f.zodiac)} · ${f.luckElem} 기운 보강일</span>
-              <h4>오늘의 운세 ${f.today}점</h4>
-              <p>${esc(f.headline)}</p>
-            </div>
-            <button class="btn-gold daily-check" data-day="${f.date}" data-key="${dayKey}">${checked ? '오늘 확인 완료' : '오늘의 운세 확인'}</button>
+        <div class="fortune-hero">
+          <div>
+            <span class="fortune-kicker">${esc(f.zodiac)} · ${f.luckElem} 기운 보강일</span>
+            <h4>오늘의 운세 ${f.today}점</h4>
+            <p>${esc(f.headline)}</p>
           </div>
-          <div class="score-grid">
-            ${SCORE_LABELS.map(([id, label]) => scoreCard(label, f.scores[id])).join('')}
-          </div>
-          <div class="period-grid">
-            <div class="period-card"><strong>${esc(f.zodiac)} 별자리 운세</strong><p>${esc(f.zodiacText)}</p></div>
-            <div class="period-card"><strong>이주의 운세 ${f.weekScore}점</strong><p>${esc(f.weekly)}</p></div>
-            <div class="period-card"><strong>이달의 운세 ${f.monthScore}점</strong><p>${esc(f.monthly)}</p></div>
-          </div>
+          <button class="btn-gold daily-check" data-day="${f.date}" data-key="${dayKey}">${checked ? '오늘 확인 완료' : '오늘의 운세 확인'}</button>
         </div>
-
-        <div class="hub-pane" data-pane="tarot">
-          <div class="tarot-spread">
-            ${f.cards.map(([name, text], i) => `<div class="tarot-mini-card"><span>${i + 1}</span><h4>${esc(name)}</h4><p>${esc(text)}</p></div>`).join('')}
-          </div>
-          <p class="tag-note">* 오늘의 타로는 하루 흐름을 가볍게 보는 참고 리딩입니다.</p>
+        <div class="score-grid">
+          ${SCORE_LABELS.map(([id, label]) => scoreCard(label, f.scores[id])).join('')}
         </div>
-
-        <div class="hub-pane" data-pane="oracle">
-          <div class="oracle-message">
-            <span>오늘의 신점 한마디</span>
-            <strong>${esc(f.oracle)}</strong>
-            <p>조심할 기운은 ${esc(f.luckElem)}의 과다/부족입니다. 오늘은 감정 판단보다 기록과 확인이 액막이가 됩니다.</p>
-          </div>
+        <div class="period-grid">
+          <div class="period-card"><strong>${esc(f.zodiac)} 별자리 운세</strong><p>${esc(f.zodiacText)}</p></div>
+          <div class="period-card"><strong>이주의 운세 ${f.weekScore}점</strong><p>${esc(f.weekly)}</p></div>
+          <div class="period-card"><strong>이달의 운세 ${f.monthScore}점</strong><p>${esc(f.monthly)}</p></div>
+        </div>
+        <div class="reader-link-row">
+          <a class="btn-ghost" href="tarot.html">타로 리딩관</a>
+          <a class="btn-ghost" href="sinjeom.html">신점 리딩관</a>
         </div>
       </section>`;
   }
 
   function bind() {
-    document.querySelectorAll('.hub-tab').forEach(btn => {
-      btn.onclick = () => {
-        const root = btn.closest('.oracle-hub');
-        root.querySelectorAll('.hub-tab').forEach(b => b.classList.toggle('active', b === btn));
-        root.querySelectorAll('.hub-pane').forEach(p => p.classList.toggle('active', p.dataset.pane === btn.dataset.hub));
-      };
-    });
     document.querySelectorAll('.daily-check').forEach(btn => {
       btn.onclick = () => {
         try { localStorage.setItem(btn.dataset.key, btn.dataset.day); } catch(err) { Sec.logError('daily-check', err); }

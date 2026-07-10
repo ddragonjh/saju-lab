@@ -99,7 +99,7 @@ body::before{
 .logo::before{content:"";display:inline-block;width:8px;height:8px;margin-right:10px;border:1px solid var(--gold);transform:rotate(45deg);box-shadow:0 0 16px rgba(201,168,106,.55)}
 .logo span{color:var(--ink);font-weight:300}
 .topnav a{color:var(--dim);text-decoration:none;font-size:.92rem;margin-left:26px;transition:color .2s,text-shadow .2s}
-.topnav a:hover{color:var(--gold-bright);text-shadow:0 0 16px rgba(232,207,154,.35)}
+.topnav a:hover,.topnav a.active{color:var(--gold-bright);text-shadow:0 0 16px rgba(232,207,154,.35)}
 
 main{position:relative;z-index:1;max-width:1060px;margin:0 auto;padding:0 22px 80px}
 #reading,#about,#faq,#result,#fortunePreview{scroll-margin-top:92px}
@@ -268,6 +268,80 @@ main{position:relative;z-index:1;max-width:1060px;margin:0 auto;padding:0 22px 8
 .oracle-message strong{display:block;font-family:var(--serif);font-size:1.28rem;color:var(--gold-bright);margin-bottom:10px}
 .oracle-message p{color:var(--dim)}
 .compat-duo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.reader-link-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+
+/* standalone reading pages */
+.reader-main{max-width:1180px}
+.reader-hero{min-height:calc(100vh - 74px);display:grid;grid-template-columns:minmax(300px,.78fr) minmax(420px,1fr);gap:28px;align-items:center;padding:54px 0 48px}
+.reader-copy{position:relative;z-index:1}
+.reader-copy h1{font-family:var(--serif);font-weight:900;font-size:clamp(2.3rem,5vw,4.1rem);line-height:1.22;margin-bottom:20px;text-shadow:0 10px 34px rgba(0,0,0,.38)}
+.reader-copy h1 em{font-style:normal;color:var(--gold-bright)}
+.intent-row{display:flex;flex-wrap:wrap;gap:9px;margin:28px 0 22px}
+.intent-chip{border:1px solid var(--panel-line);background:rgba(255,255,255,.035);color:var(--dim);border-radius:999px;padding:10px 17px;cursor:pointer;font-weight:800;font-family:var(--sans);transition:transform .2s,border-color .2s,background .2s,color .2s}
+.intent-chip:hover,.intent-chip.active{transform:translateY(-2px);background:linear-gradient(135deg,#e5c779,#b8914c);border-color:transparent;color:#171204}
+.tarot-table{background:linear-gradient(160deg,rgba(141,106,184,.13),rgba(201,168,106,.07),rgba(97,194,173,.06));border:1px solid var(--panel-line);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
+.tarot-table::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(125deg,transparent 0 28px,rgba(255,255,255,.034) 28px 29px,transparent 29px 62px);pointer-events:none}
+.tarot-stage{min-height:284px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:radial-gradient(360px 220px at 50% 42%,rgba(232,207,154,.16),transparent 64%),rgba(11,13,23,.46);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+.deck-stack{position:relative;width:136px;height:198px;transform:rotate(-4deg)}
+.deck-stack span,.motion-card{position:absolute;inset:0;border-radius:14px;border:1px solid rgba(232,207,154,.46);background:
+  linear-gradient(135deg,rgba(232,207,154,.18),rgba(141,106,184,.22)),
+  repeating-linear-gradient(45deg,rgba(255,255,255,.12) 0 1px,transparent 1px 12px),
+  #171423;box-shadow:0 18px 44px rgba(0,0,0,.36),inset 0 0 0 8px rgba(11,13,23,.72),inset 0 0 0 10px rgba(232,207,154,.24)}
+.deck-stack span:nth-child(1){transform:translate(-8px,8px) rotate(-5deg)}
+.deck-stack span:nth-child(2){transform:translate(-4px,4px) rotate(-2deg)}
+.deck-stack span:nth-child(3){transform:translate(0,0)}
+.deck-stack span:nth-child(4){transform:translate(4px,-4px) rotate(2deg)}
+.deck-stack span:nth-child(5){transform:translate(8px,-8px) rotate(5deg)}
+.table-hint{position:absolute;left:18px;right:18px;bottom:14px;text-align:center;color:var(--dim);font-size:.88rem}
+.tarot-stage.is-drawing .deck-stack{animation:deckShuffle .9s ease-in-out infinite}
+.motion-card{width:136px;height:198px;left:calc(50% - 68px);top:calc(50% - 99px);opacity:0}
+.tarot-stage.is-drawing .motion-one{animation:cardFlyLeft 1.12s cubic-bezier(.2,.8,.2,1) forwards}
+.tarot-stage.is-drawing .motion-two{animation:cardFlyCenter 1.12s .08s cubic-bezier(.2,.8,.2,1) forwards}
+.tarot-stage.is-drawing .motion-three{animation:cardFlyRight 1.12s .16s cubic-bezier(.2,.8,.2,1) forwards}
+.tarot-stage.is-settled .deck-stack{transform:scale(.88) rotate(-2deg);opacity:.42}
+.tarot-slots{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.tarot-slot{min-height:196px;border:1px dashed rgba(232,207,154,.24);border-radius:12px;background:rgba(11,13,23,.32);padding:12px;display:flex;align-items:center;justify-content:center;text-align:center;position:relative}
+.tarot-slot.empty span{color:var(--dim);font-size:.86rem}
+.tarot-slot-card{border-style:solid;animation:cardReveal .55s ease both}
+.tarot-slot-card > span{position:absolute;transform:translateY(-92px);color:var(--gold);font-size:.78rem}
+.tarot-card-face{width:100%;height:168px;border-radius:11px;border:1px solid rgba(232,207,154,.48);background:linear-gradient(160deg,rgba(232,207,154,.17),rgba(97,194,173,.08),rgba(141,106,184,.18)),#121525;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
+.tarot-card-face small{font-family:var(--serif);color:var(--gold);font-size:.86rem}
+.tarot-card-face strong{font-family:var(--serif);font-size:1.34rem;color:var(--gold-bright)}
+.tarot-card-face em{font-style:normal;color:var(--dim);font-size:.78rem}
+.tarot-card-face.reversed{border-color:rgba(216,131,120,.54);background:linear-gradient(160deg,rgba(216,131,120,.14),rgba(141,106,184,.16),rgba(232,207,154,.08)),#121525}
+.tarot-reading-panel{animation:fadeUp .55s ease}
+.tarot-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.tarot-result-card{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.018)),var(--bg-2);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:18px;min-height:220px}
+.tarot-result-card span{color:var(--gold);font-size:.82rem}
+.tarot-result-card h3{font-family:var(--serif);color:var(--gold-bright);margin:8px 0}
+.tarot-result-card h3 small{color:var(--dim);font-family:var(--sans);font-size:.74rem}
+.tarot-result-card p{color:#cfccc2;font-size:.92rem}
+.tarot-result-card .tarot-keys{color:var(--jade);font-size:.82rem;margin-bottom:8px}
+.service-deck.compact{grid-template-columns:repeat(2,1fr);margin:0}
+.oracle-table{background:linear-gradient(160deg,rgba(97,194,173,.12),rgba(201,168,106,.08),rgba(141,106,184,.08));border:1px solid var(--panel-line);border-radius:var(--radius);padding:32px;min-height:520px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
+.oracle-table::before{content:"";position:absolute;inset:0;background:radial-gradient(440px 240px at 50% 42%,rgba(97,194,173,.16),transparent 64%),repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.03) 38px 39px,transparent 39px 78px);pointer-events:none}
+.oracle-gate{width:min(78vw,360px);aspect-ratio:1;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(232,207,154,.12),rgba(11,13,23,.12) 42%,transparent 70%);isolation:isolate}
+.oracle-gate strong{font-family:var(--serif);font-size:6rem;color:var(--gold-bright);text-shadow:0 0 34px rgba(232,207,154,.3);z-index:2}
+.gate-ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(232,207,154,.28);box-shadow:0 0 34px rgba(201,168,106,.12)}
+.ring-one{animation:spinSlow 68s linear infinite}
+.ring-two{inset:14%;border-color:rgba(97,194,173,.34);border-style:dashed;animation:spinSlow 42s linear infinite reverse}
+.ring-three{inset:28%;border-color:rgba(216,131,120,.25);animation:pulseRing 4.8s ease-in-out infinite}
+.oracle-gate::before{content:"";position:absolute;inset:9%;border-radius:50%;background:conic-gradient(from 0deg,transparent,rgba(232,207,154,.2),transparent 22%,rgba(97,194,173,.16),transparent 48%,rgba(216,131,120,.14),transparent 74%);filter:blur(.2px);animation:spinSlow 26s linear infinite}
+.oracle-gate.is-reading{animation:gateLift .95s ease both}
+.oracle-gate.is-reading .gate-ring{box-shadow:0 0 58px rgba(232,207,154,.28)}
+.oracle-gate.is-settled strong{color:var(--jade)}
+.oracle-topic-row{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:420px}
+.oracle-topic-row span{border:1px solid rgba(232,207,154,.25);border-radius:999px;padding:8px 12px;text-align:center;color:var(--dim);background:rgba(11,13,23,.4);font-size:.86rem}
+.oracle-reading-panel{animation:fadeUp .55s ease}
+.oracle-message.large{padding:30px;margin-bottom:14px}
+.oracle-message.large strong{font-size:1.58rem;line-height:1.5}
+.oracle-detail-grid{grid-template-columns:repeat(3,1fr)}
+@keyframes gateLift{0%{transform:scale(.92);filter:brightness(.9)}45%{transform:scale(1.04);filter:brightness(1.35)}100%{transform:scale(1);filter:brightness(1)}}
+@keyframes deckShuffle{0%,100%{transform:rotate(-4deg) translateX(0)}25%{transform:rotate(3deg) translateX(-8px)}50%{transform:rotate(-2deg) translateX(8px)}75%{transform:rotate(4deg) translateX(-4px)}}
+@keyframes cardFlyLeft{0%{opacity:0;transform:translate(0,0) rotate(-4deg) scale(.72)}18%{opacity:1}100%{opacity:1;transform:translate(-198px,20px) rotate(-11deg) scale(.82)}}
+@keyframes cardFlyCenter{0%{opacity:0;transform:translate(0,0) rotate(2deg) scale(.72)}18%{opacity:1}100%{opacity:1;transform:translate(0,-4px) rotate(1deg) scale(.82)}}
+@keyframes cardFlyRight{0%{opacity:0;transform:translate(0,0) rotate(5deg) scale(.72)}18%{opacity:1}100%{opacity:1;transform:translate(198px,20px) rotate(11deg) scale(.82)}}
+@keyframes cardReveal{from{opacity:0;transform:translateY(16px) rotateY(70deg)}to{opacity:1;transform:none}}
 
 /* daeun timeline */
 .daeun-scroll{overflow-x:auto;padding-bottom:8px}
@@ -402,6 +476,18 @@ details p{color:var(--dim);font-size:.92rem;margin-top:10px;animation:fadeUp .28
   .fortune-hero{align-items:stretch;flex-direction:column}
   .daily-check{width:100%;text-align:center}
   .tarot-spread,.compat-duo{grid-template-columns:1fr}
+  .reader-hero{grid-template-columns:1fr;min-height:auto;padding:42px 0 32px}
+  .reader-copy h1{font-size:clamp(2.1rem,11vw,3rem)}
+  .intent-row{margin:22px 0 18px}
+  .tarot-table,.oracle-table{padding:20px;min-height:auto}
+  .tarot-stage{min-height:250px}
+  .tarot-slots,.tarot-result-grid,.service-deck.compact,.oracle-detail-grid{grid-template-columns:1fr}
+  .deck-stack{width:112px;height:164px}
+  .motion-card{width:112px;height:164px;left:calc(50% - 56px);top:calc(50% - 82px)}
+  .tarot-card-face{height:154px}
+  .tarot-slot-card > span{position:static;display:block;transform:none;margin-bottom:8px}
+  .oracle-gate{width:min(76vw,300px)}
+  .oracle-gate strong{font-size:4.8rem}
   .compat-form{grid-template-columns:1fr 1fr}
   .compat-score{margin:0;padding:16px}
   .prem-redeem{flex-direction:column}
@@ -411,6 +497,11 @@ details p{color:var(--dim);font-size:.92rem;margin-top:10px;animation:fadeUp .28
   .about-grid{grid-template-columns:1fr}
   .topnav a{margin-left:14px;font-size:.82rem}
   .r-block{padding:26px 20px}
+}
+@media(max-width:720px){
+  @keyframes cardFlyLeft{0%{opacity:0;transform:translate(0,0) rotate(-4deg) scale(.72)}18%{opacity:1}100%{opacity:1;transform:translate(-112px,18px) rotate(-10deg) scale(.76)}}
+  @keyframes cardFlyCenter{0%{opacity:0;transform:translate(0,0) rotate(2deg) scale(.72)}18%{opacity:1}100%{opacity:1;transform:translate(0,-4px) rotate(1deg) scale(.76)}}
+  @keyframes cardFlyRight{0%{opacity:0;transform:translate(0,0) rotate(5deg) scale(.72)}18%{opacity:1}100%{opacity:1;transform:translate(112px,18px) rotate(10deg) scale(.76)}}
 }
 @media(max-width:480px){
   .topbar-inner{padding:12px 16px;gap:9px;align-items:stretch;flex-direction:column}
