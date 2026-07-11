@@ -3,7 +3,7 @@
 작성일: 2026-07-11  
 대상: 앱인토스 비게임 WebView 미니앱  
 앱 이름: 운명연구소  
-앱 ID 후보: `unmyeong-lab`
+앱 ID: `unmyeonglab`
 
 ## 목표
 
@@ -87,10 +87,10 @@ npm run check:appintoss
 
 로컬 빌드 후 생성되는 산출물:
 
-- 공식 AIT 산출물: `appintoss/unmyeong-lab.ait`
-- 보조 ZIP 번들: `appintoss/dist-appintoss/unmyeong-lab-appintoss.zip`
+- 공식 AIT 산출물: `appintoss/unmyeonglab.ait`
+- 보조 ZIP 번들: `appintoss/dist-appintoss/unmyeonglab-appintoss.zip`
 - 웹 빌드: `appintoss/dist/web/`
-- 최신 로컬 AIT 빌드 deploymentId: `019f4f4e-92a6-7c49-99d1-8dd05db495fb`
+- 최신 로컬 AIT 빌드 deploymentId: `019f4f52-313d-7fbe-9b90-0c4af9fffc58`
 
 위 파일들은 로컬 제출/검증 산출물이므로 `.gitignore`에 포함했다.
 

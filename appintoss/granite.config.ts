@@ -1,7 +1,7 @@
 import { defineConfig } from '@apps-in-toss/web-framework/config';
 
 export default defineConfig({
-  appName: 'unmyeong-lab',
+  appName: 'unmyeonglab',
   brand: {
     displayName: '운명연구소',
     primaryColor: '#c9a86a',

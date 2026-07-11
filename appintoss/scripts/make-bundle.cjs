@@ -5,7 +5,7 @@ const { execFileSync } = require('node:child_process');
 const root = path.resolve(__dirname, '..');
 const dist = path.join(root, 'dist');
 const outDir = path.join(root, 'dist-appintoss');
-const outFile = path.join(outDir, 'unmyeong-lab-appintoss.zip');
+const outFile = path.join(outDir, 'unmyeonglab-appintoss.zip');
 
 if (!fs.existsSync(dist)) {
   console.error('dist folder not found. Run npm run build first.');
@@ -30,7 +30,7 @@ fs.writeFileSync(
   manifestFile,
   JSON.stringify(
     {
-      appName: 'unmyeong-lab',
+      appName: 'unmyeonglab',
       createdAt: new Date().toISOString(),
       files: manifest,
     },

@@ -14,7 +14,7 @@
 | 타로 테스트 | `npm run test:tarot` | 통과 |
 | 식별 테스트 | `npm run test:identity` | 통과 |
 | Vite 빌드 | `npm run build` | 통과 |
-| 공식 AIT 빌드 | `npm exec -- ait build` 및 `npm run build:appintoss` | 통과, deploymentId `019f4f4e-92a6-7c49-99d1-8dd05db495fb` |
+| 공식 AIT 빌드 | `npm exec -- ait build` 및 `npm run build:appintoss` | 통과, deploymentId `019f4f52-313d-7fbe-9b90-0c4af9fffc58` |
 | 업로드용 ZIP | `npm run bundle` | 통과 |
 | 개인정보 검사 | `npm run check:privacy` | 통과 |
 | 무료 정책 검사 | `npm run check:free-only` | 통과 |
@@ -65,7 +65,7 @@
 | 앱 백그라운드 복귀 | 운영자 확인 필요 | 저장 기록 유지 확인 |
 | 연속 뒤로가기 | 운영자 확인 필요 | 앱 종료/화면 전환 확인 |
 | 저장 데이터 삭제 | 로컬/실기기 확인 | 항목 삭제와 전체 삭제 |
-| 딥링크 진입 | 운영자 확인 필요 | `intoss://unmyeong-lab/...` |
+| 딥링크 진입 | 운영자 확인 필요 | `intoss://unmyeonglab/...` |
 | 공유 결과 진입 | 운영자 확인 필요 | 개인정보 없는 공개 요약 |
 
 ## 의존성 점검

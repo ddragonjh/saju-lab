@@ -39,13 +39,14 @@ const required = [
   ['Safe Area 적용', /safe-area-inset/],
   ['뒤로가기 처리', /backEvent/],
   ['앱인토스 설정', /defineConfig[\s\S]*appName/],
+  ['콘솔 appName 일치', /appName:\s*['"]unmyeonglab['"]/],
 ];
 
 for (const [name, pattern] of required) {
   if (!pattern.test(all)) failures.push(String(name));
 }
 
-const bundle = path.join(root, 'dist-appintoss', 'unmyeong-lab-appintoss.zip');
+const bundle = path.join(root, 'dist-appintoss', 'unmyeonglab-appintoss.zip');
 if (!fs.existsSync(bundle)) failures.push('앱인토스 업로드용 ZIP 없음');
 
 if (failures.length) {
