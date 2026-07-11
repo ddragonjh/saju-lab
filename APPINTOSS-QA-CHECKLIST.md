@@ -14,7 +14,7 @@
 | 타로 테스트 | `npm run test:tarot` | 통과 |
 | 식별 테스트 | `npm run test:identity` | 통과 |
 | Vite 빌드 | `npm run build` | 통과 |
-| 공식 AIT 빌드 | `npm exec -- ait build` 및 `npm run build:appintoss` | 통과, deploymentId `019f4f3f-4cc5-758f-ac96-8a78b4037e23` |
+| 공식 AIT 빌드 | `npm exec -- ait build` 및 `npm run build:appintoss` | 통과, deploymentId `019f4f4e-92a6-7c49-99d1-8dd05db495fb` |
 | 업로드용 ZIP | `npm run bundle` | 통과 |
 | 개인정보 검사 | `npm run check:privacy` | 통과 |
 | 무료 정책 검사 | `npm run check:free-only` | 통과 |

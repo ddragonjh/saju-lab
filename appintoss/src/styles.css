@@ -29,8 +29,10 @@
 html,
 body,
 #root {
+  width: 100%;
   min-height: 100%;
   margin: 0;
+  overflow-x: hidden;
 }
 
 body {
@@ -63,11 +65,13 @@ select:focus-visible {
 
 .appShell {
   position: relative;
+  width: min(100%, 520px);
   max-width: 520px;
   min-height: 100dvh;
   margin: 0 auto;
   padding: env(safe-area-inset-top) 14px calc(86px + env(safe-area-inset-bottom));
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .appShell::before {
@@ -146,11 +150,15 @@ select:focus-visible {
 .screen {
   position: relative;
   z-index: 1;
+  width: 100%;
+  min-width: 0;
 }
 
 .stack {
   display: grid;
   gap: 14px;
+  width: 100%;
+  min-width: 0;
 }
 
 .heroCard,
@@ -159,10 +167,44 @@ select:focus-visible {
 .formPanel,
 .tarotTable,
 .oracleResult {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: linear-gradient(180deg, rgba(28, 32, 53, 0.94), rgba(14, 17, 30, 0.94));
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34);
+}
+
+.screenTitle,
+.panelBlock,
+.formPanel,
+.resultHero,
+.inlineWarn,
+.quickGrid,
+.miniGrid,
+.scoreGrid,
+.pillarGrid,
+.actionRow,
+.tarotSpread,
+.tarotSlots,
+.zodiacGrid,
+.recordMiniList,
+.recordList,
+.timeline,
+.legalText {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.screenTitle *,
+.panelBlock *,
+.formPanel *,
+.resultHero *,
+.inlineWarn *,
+.recordList *,
+.legalText * {
+  overflow-wrap: anywhere;
 }
 
 .heroCard {
@@ -388,12 +430,14 @@ select:focus-visible {
   display: grid;
   grid-template-columns: 1.2fr 0.9fr 0.9fr;
   gap: 8px;
+  min-width: 0;
 }
 
 .twoCols {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
+  min-width: 0;
 }
 
 .checkRow {
@@ -460,6 +504,7 @@ select:focus-visible {
   display: grid;
   grid-template-columns: 1.2fr 0.8fr;
   gap: 10px;
+  min-width: 0;
 }
 
 .actionRow .ghostButton:last-child:nth-child(3) {
@@ -467,6 +512,7 @@ select:focus-visible {
 }
 
 .resultHero {
+  max-width: 100%;
   padding: 20px;
   border: 1px solid rgba(241, 213, 140, 0.22);
   border-radius: var(--radius);
@@ -564,6 +610,11 @@ select:focus-visible {
   display: flex;
   justify-content: space-between;
   gap: 10px;
+  min-width: 0;
+}
+
+.scoreTop span {
+  min-width: 0;
 }
 
 .scoreTop strong {
@@ -610,6 +661,7 @@ select:focus-visible {
   grid-auto-columns: 132px;
   gap: 8px;
   overflow-x: auto;
+  max-width: 100%;
   padding-bottom: 6px;
 }
 
@@ -938,6 +990,32 @@ select:focus-visible {
 
   .zodiacGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 430px) {
+  .threeCols,
+  .twoCols,
+  .quickGrid,
+  .miniGrid,
+  .scoreGrid,
+  .actionRow {
+    grid-template-columns: 1fr;
+  }
+
+  .pillarGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .resultHero h1 {
+    font-size: 1.42rem;
+  }
+
+  .panelBlock,
+  .formPanel,
+  .screenTitle {
+    padding-left: 16px;
+    padding-right: 16px;
   }
 }
 

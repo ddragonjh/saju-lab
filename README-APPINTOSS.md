@@ -90,7 +90,7 @@ npm run check:appintoss
 - 공식 AIT 산출물: `appintoss/unmyeong-lab.ait`
 - 보조 ZIP 번들: `appintoss/dist-appintoss/unmyeong-lab-appintoss.zip`
 - 웹 빌드: `appintoss/dist/web/`
-- 최신 로컬 AIT 빌드 deploymentId: `019f4f3f-4cc5-758f-ac96-8a78b4037e23`
+- 최신 로컬 AIT 빌드 deploymentId: `019f4f4e-92a6-7c49-99d1-8dd05db495fb`
 
 위 파일들은 로컬 제출/검증 산출물이므로 `.gitignore`에 포함했다.
 

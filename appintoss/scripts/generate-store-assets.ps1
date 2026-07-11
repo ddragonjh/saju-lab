@@ -23,17 +23,11 @@ public static class StoreAssetGenerator
     static readonly string AppName = "\uC6B4\uBA85\uC5F0\uAD6C\uC18C";
     static readonly string ServiceLine = "\uC0AC\uC8FC \u00B7 \uD0C0\uB85C \u00B7 \uC2E0\uC810 \u00B7 \uBCC4\uC790\uB9AC";
     static readonly string TodayLine = "\uC624\uB298\uC758 \uD750\uB984\uC744 \uAC00\uBC8D\uAC8C \uD655\uC778\uD558\uC138\uC694";
-    static readonly string NoSignup = "\uD68C\uC6D0\uAC00\uC785 \uC5C6\uC774";
-    static readonly string FreeAll = "\uBAA8\uB4E0 \uAE30\uB2A5 \uBB34\uB8CC";
-    static readonly string NoAds = "\uAD11\uACE0 \uC5C6\uC74C";
-    static readonly string NoPay = "\uACB0\uC81C \uC5C6\uC74C";
     static readonly string Saju = "\uC0AC\uC8FC";
     static readonly string Tarot = "\uD0C0\uB85C";
     static readonly string Oracle = "\uC2E0\uC810";
     static readonly string Zodiac = "\uBCC4\uC790\uB9AC";
     static readonly string Fortune = "\uC624\uB298\uC758 \uC6B4\uC138";
-    static readonly string Score = "\uC6B4\uC138 \uC810\uC218";
-    static readonly string Records = "\uB0B4 \uC6B4\uC138 \uAE30\uB85D";
     static readonly string SelfCare = "\uC624\uB77D\u00B7\uC790\uAE30\uC774\uD574\uC6A9 \uCC38\uACE0 \uCF58\uD150\uCE20";
 
     public static void Generate(string outputDir)
@@ -151,6 +145,25 @@ public static class StoreAssetGenerator
         }
     }
 
+    static void DrawOrbitMark(Graphics g, float cx, float cy, float r)
+    {
+        using (var glow = new SolidBrush(Color.FromArgb(34, Gold)))
+        {
+            g.FillEllipse(glow, cx - r * 1.45f, cy - r * 1.45f, r * 2.9f, r * 2.9f);
+        }
+        DrawCompass(g, cx, cy, r);
+        using (var p = new Pen(Color.FromArgb(96, Ink), 1.4f))
+        {
+            g.DrawEllipse(p, cx - r * 1.23f, cy - r * .42f, r * 2.46f, r * .84f);
+            g.DrawEllipse(p, cx - r * .42f, cy - r * 1.23f, r * .84f, r * 2.46f);
+        }
+        using (var b = new SolidBrush(Color.FromArgb(235, Ink)))
+        using (var f = Font(r * .52f, FontStyle.Bold))
+        {
+            Text(g, "\u904B", f, b, new RectangleF(cx - r, cy - r * .58f, r * 2, r * 1.12f), StringAlignment.Center, StringAlignment.Center);
+        }
+    }
+
     static void Chip(Graphics g, string label, float x, float y, float w)
     {
         var r = new RectangleF(x, y, w, 46);
@@ -181,6 +194,28 @@ public static class StoreAssetGenerator
         {
             Text(g, title, f1, new SolidBrush(Ink), new RectangleF(r.X + 84, r.Y + 18, r.Width - 104, 30));
             Text(g, body, f2, new SolidBrush(Muted), new RectangleF(r.X + 84, r.Y + 52, r.Width - 104, 48));
+        }
+    }
+
+    static void FeatureCard(Graphics g, string title, string body, string mark, RectangleF r, Color accent)
+    {
+        using (var b = new LinearGradientBrush(r, Color.FromArgb(236, 24, 27, 48), Color.FromArgb(222, 12, 15, 31), 110f))
+        using (var p = new Pen(Color.FromArgb(72, 226, 191, 108), 1.3f))
+        {
+            FillRound(g, b, r, 24);
+            StrokeRound(g, p, r, 24);
+        }
+        using (var b = new SolidBrush(Color.FromArgb(220, accent)))
+        {
+            FillRound(g, b, new RectangleF(r.X + 24, r.Y + 26, 70, 70), 22);
+        }
+        using (var f0 = Font(34, FontStyle.Bold))
+        using (var f1 = Font(34, FontStyle.Bold))
+        using (var f2 = Font(22))
+        {
+            Text(g, mark, f0, new SolidBrush(Color.FromArgb(245, 9, 11, 20)), new RectangleF(r.X + 24, r.Y + 25, 70, 70), StringAlignment.Center, StringAlignment.Center);
+            Text(g, title, f1, new SolidBrush(Ink), new RectangleF(r.X + 116, r.Y + 28, r.Width - 146, 42));
+            Text(g, body, f2, new SolidBrush(Muted), new RectangleF(r.X + 116, r.Y + 77, r.Width - 146, 58));
         }
     }
 
@@ -218,19 +253,16 @@ public static class StoreAssetGenerator
         {
             Setup(g);
             Background(g, 600, 600);
-            DrawCompass(g, 300, 215, 124);
+            using (var veil = new SolidBrush(Color.FromArgb(84, 0, 0, 0)))
+                g.FillRectangle(veil, 0, 0, 600, 600);
+            DrawOrbitMark(g, 300, 228, 132);
 
-            using (var f1 = Font(58, FontStyle.Bold))
-            using (var f2 = Font(25, FontStyle.Bold))
-            using (var f3 = Font(18))
+            using (var f1 = Font(56, FontStyle.Bold))
+            using (var f2 = Font(24, FontStyle.Bold))
             {
-                Text(g, AppName, f1, new SolidBrush(Ink), new RectangleF(0, 352, 600, 72), StringAlignment.Center, StringAlignment.Center);
-                Text(g, ServiceLine, f2, new SolidBrush(Gold), new RectangleF(0, 426, 600, 38), StringAlignment.Center, StringAlignment.Center);
-                Text(g, TodayLine, f3, new SolidBrush(Muted), new RectangleF(0, 468, 600, 32), StringAlignment.Center, StringAlignment.Center);
+                Text(g, AppName, f1, new SolidBrush(Ink), new RectangleF(0, 400, 600, 74), StringAlignment.Center, StringAlignment.Center);
+                Text(g, ServiceLine, f2, new SolidBrush(Gold), new RectangleF(0, 480, 600, 40), StringAlignment.Center, StringAlignment.Center);
             }
-            Chip(g, FreeAll, 64, 522, 154);
-            Chip(g, NoSignup, 232, 522, 150);
-            Chip(g, NoPay, 396, 522, 140);
             bmp.Save(path, ImageFormat.Png);
         }
     }
@@ -243,36 +275,27 @@ public static class StoreAssetGenerator
             Setup(g);
             Background(g, 1932, 828);
 
-            using (var halo = new SolidBrush(Color.FromArgb(45, Gold)))
-                g.FillEllipse(halo, 1180, -140, 720, 720);
-            DrawCompass(g, 1578, 260, 178);
+            using (var veil = new SolidBrush(Color.FromArgb(42, 0, 0, 0)))
+                g.FillRectangle(veil, 0, 0, 1932, 828);
+            using (var halo = new SolidBrush(Color.FromArgb(34, Gold)))
+                g.FillEllipse(halo, 1188, -132, 690, 690);
+            DrawOrbitMark(g, 1588, 256, 154);
 
-            using (var f1 = Font(108, FontStyle.Bold))
+            using (var f1 = Font(112, FontStyle.Bold))
             using (var f2 = Font(42, FontStyle.Bold))
             using (var f3 = Font(34))
             using (var f4 = Font(26))
             {
-                Text(g, AppName, f1, new SolidBrush(Ink), new RectangleF(118, 150, 760, 130));
-                Text(g, ServiceLine, f2, new SolidBrush(Gold), new RectangleF(124, 298, 820, 60));
-                Text(g, TodayLine, f3, new SolidBrush(Muted), new RectangleF(124, 374, 760, 52));
-                Text(g, SelfCare, f4, new SolidBrush(Color.FromArgb(210, Ink)), new RectangleF(124, 626, 850, 42));
+                Text(g, AppName, f1, new SolidBrush(Ink), new RectangleF(120, 150, 760, 132));
+                Text(g, ServiceLine, f2, new SolidBrush(Gold), new RectangleF(128, 300, 820, 62));
+                Text(g, TodayLine, f3, new SolidBrush(Muted), new RectangleF(128, 390, 760, 54));
+                Text(g, SelfCare, f4, new SolidBrush(Color.FromArgb(218, Ink)), new RectangleF(130, 658, 850, 42));
             }
 
-            Chip(g, FreeAll, 126, 482, 180);
-            Chip(g, NoSignup, 328, 482, 192);
-            Chip(g, NoAds, 542, 482, 146);
-            Chip(g, NoPay, 710, 482, 146);
-
-            Phone(g, new RectangleF(1008, 132, 318, 580), Records, "\uC800\uC7A5\uD55C \uACB0\uACFC");
-            Phone(g, new RectangleF(1288, 88, 344, 628), AppName, "\uC0AC\uC8FC\u00B7\uD0C0\uB85C\u00B7\uC6B4\uC138");
-            Phone(g, new RectangleF(1602, 148, 278, 510), Oracle, Zodiac + "\u00B7\uC624\uB298");
-
-            using (var f = Font(38, FontStyle.Bold))
-            using (var b = new SolidBrush(Color.FromArgb(235, Gold)))
-            {
-                Text(g, "82", f, b, new RectangleF(1425, 522, 120, 52), StringAlignment.Center, StringAlignment.Center);
-                Text(g, Score, Font(17), new SolidBrush(Muted), new RectangleF(1398, 574, 174, 32), StringAlignment.Center, StringAlignment.Center);
-            }
+            FeatureCard(g, Saju, "\uC624\uD589\u00B7\uC2ED\uC131\u00B7\uB300\uC6B4", "\u56DB", new RectangleF(1042, 436, 360, 148), Color.FromArgb(255, 190, 146, 67));
+            FeatureCard(g, Tarot, "\uC9C1\uC811 \uACE0\uB974\uB294 3\uC7A5", "\u2726", new RectangleF(1440, 436, 360, 148), Color.FromArgb(255, 100, 77, 190));
+            FeatureCard(g, Oracle, "\uC624\uB298 \uD544\uC694\uD55C \uD55C\uB9C8\uB514", "\u25C7", new RectangleF(1042, 612, 360, 148), Color.FromArgb(255, 61, 148, 162));
+            FeatureCard(g, Zodiac, "\uBCC4\uC790\uB9AC \uC6B4\uC138", "\u2606", new RectangleF(1440, 612, 360, 148), Color.FromArgb(255, 201, 168, 106));
             bmp.Save(path, ImageFormat.Png);
         }
     }

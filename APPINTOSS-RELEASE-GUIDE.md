@@ -32,7 +32,7 @@ npm run check:appintoss
 
 - 공식 업로드 후보: `appintoss/unmyeong-lab.ait`
 - 보조 ZIP: `appintoss/dist-appintoss/unmyeong-lab-appintoss.zip`
-- 최신 로컬 AIT 빌드 deploymentId: `019f4f3f-4cc5-758f-ac96-8a78b4037e23`
+- 최신 로컬 AIT 빌드 deploymentId: `019f4f4e-92a6-7c49-99d1-8dd05db495fb`
 
 공식 콘솔이 `.ait` 업로드를 요구하면 `.ait` 파일을 사용하고, 정적 WebView ZIP 업로드 절차가 필요한 경우 보조 ZIP을 사용한다.
 
