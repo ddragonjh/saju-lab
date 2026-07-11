@@ -4,3 +4,8 @@ shorts/output/
 PREMIUM-CODES.txt
 *.private.txt
 .private/
+appintoss/node_modules/
+appintoss/.granite/
+appintoss/dist/
+appintoss/dist-appintoss/
+appintoss/*.ait

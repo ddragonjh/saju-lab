@@ -1,0 +1,39 @@
+{
+  "name": "unmyeong-lab-appintoss",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "build:appintoss": "ait build && npm run bundle",
+    "bundle": "node scripts/make-bundle.cjs",
+    "lint": "node tests/static-checks.cjs",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx tests/run-tests.ts",
+    "test:saju": "tsx tests/run-tests.ts --saju",
+    "test:fortune": "tsx tests/run-tests.ts --fortune",
+    "test:tarot": "tsx tests/run-tests.ts --tarot",
+    "test:identity": "tsx tests/run-tests.ts --identity",
+    "check:privacy": "node tests/check-privacy.cjs",
+    "check:free-only": "node tests/check-free-only.cjs",
+    "check:appintoss": "node tests/check-appintoss.cjs"
+  },
+  "dependencies": {
+    "@apps-in-toss/web-framework": "2.10.5",
+    "@emotion/react": "11.14.0",
+    "@toss/tds-mobile": "2.5.0",
+    "@toss/tds-mobile-ait": "2.5.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.1",
+    "@types/react": "18.3.31",
+    "@types/react-dom": "18.3.7",
+    "@vitejs/plugin-react": "6.0.3",
+    "tsx": "4.23.0",
+    "typescript": "5.9.3",
+    "vite": "8.1.4"
+  }
+}
