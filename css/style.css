@@ -659,14 +659,12 @@ details p{color:var(--dim);font-size:.92rem;margin-top:10px;animation:fadeUp .28
 .star-ilju{color:var(--dim);font-size:.9rem;margin-top:6px}
 .star-love h4,.star-fan h4{color:var(--gold-bright)}
 
-/* ── 마스코트 도담이 ── */
-.has-mascot{position:relative}
-.mascot{position:absolute;top:-14px;right:10px;z-index:3;display:flex;align-items:flex-start;gap:8px;pointer-events:none}
-.mascot-svg{filter:drop-shadow(0 6px 14px rgba(0,0,0,.35));animation:mascotFloat 4.5s ease-in-out infinite}
-@keyframes mascotFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-.mascot-bubble{order:-1;align-self:center;background:var(--bg-2);border:1px solid var(--panel-line);border-radius:14px 14px 4px 14px;padding:9px 13px;font-size:.8rem;line-height:1.5;color:var(--ink);max-width:190px;box-shadow:0 6px 20px rgba(0,0,0,.3);position:relative}
-.mascot-bubble::after{content:"";position:absolute;right:-7px;bottom:12px;width:0;height:0;border:7px solid transparent;border-left-color:var(--bg-2)}
-.has-mascot .sec-title{padding-right:120px}
-@media(prefers-reduced-motion:reduce){.mascot-svg{animation:none}}
-@media(max-width:900px){.mascot-bubble{display:none}.mascot{top:-8px;right:6px}.mascot-svg{width:74px!important;height:96px!important}.has-mascot .sec-title{padding-right:70px}}
-@media(max-width:520px){.mascot-svg{width:58px!important;height:75px!important}.has-mascot .sec-title{padding-right:56px}.star-form{flex-direction:column;align-items:stretch}.star-form input[type=text],.star-form select{width:100%}}
+/* ── 마스코트 도담이 (실제 일러스트, float로 본문이 감쌈) ── */
+.mascot{float:right;width:150px;margin:0 0 12px 20px;text-align:center;shape-outside:margin-box}
+.mascot-img{display:block;width:150px;height:150px;object-fit:cover;object-position:50% 12%;border-radius:18px;border:1px solid var(--panel-line);box-shadow:0 10px 28px rgba(0,0,0,.34);animation:mascotFloat 5s ease-in-out infinite}
+@keyframes mascotFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.mascot-bubble{display:inline-block;margin-top:9px;background:var(--bg-2);border:1px solid var(--panel-line);border-radius:14px;padding:8px 12px;font-size:.78rem;line-height:1.5;color:var(--ink);max-width:170px;box-shadow:0 6px 18px rgba(0,0,0,.28)}
+.reader-copy .mascot{margin:4px 0 10px 22px}
+@media(prefers-reduced-motion:reduce){.mascot-img{animation:none}}
+@media(max-width:640px){.mascot{width:104px;margin:0 0 8px 12px}.mascot-img{width:104px;height:104px}.mascot-bubble{display:none}}
+@media(max-width:520px){.star-form{flex-direction:column;align-items:stretch}.star-form input[type=text],.star-form select{width:100%}}
