@@ -158,37 +158,12 @@ const PREMIUM = (() => {
   }
 
   // ═══════════ UI ═══════════
+  // 2026-07 정책 변경: 기존 프리미엄(궁합·질문리딩·타이밍)은 전면 무료화.
+  // 유료화는 별도 '스타·캐릭터 사주'(STAR 모듈)로 이동.
   function sectionHtml(isPrem, r) {
-    if (!isPrem) return `
-      <div class="prem-wall" id="premWall">
-        <div class="prem-badge">PREMIUM</div>
-        <h3>프리미엄 질문 리딩</h3>
-        <p class="content-notice small">오락·자기이해용 참고 콘텐츠이며 의료·법률·투자·진로 판단을 대체하지 않습니다.</p>
-        <ul class="prem-list">
-          <li><strong>재회 시기 · 상대 속마음 · 환승이별 흐름</strong> — 연애 사건별 가능성과 행동 타이밍</li>
-          <li><strong>이직운 · 합격운 · 승진운</strong> — 커리어 질문을 점수와 조언으로 정리</li>
-          <li><strong>겉궁합부터 속궁합까지</strong> — 띠궁합, 배우자궁, 일간, 오행 보완을 한 번에 비교</li>
-          <li><strong>인생 타이밍 캘린더</strong> — 변화, 돈, 문서가 강해지는 해를 선별</li>
-        </ul>
-        <div class="prem-price"><span class="won">9,900원</span> <span class="per">1회 결제 · 평생 이용</span></div>
-        <div class="prem-legal">
-          <p><strong>결제 전 고지</strong>: 제공 내용, 가격, 이용권 코드 발급 방식, 환불 조건, 고객센터 이메일을 확인한 뒤 결제해 주세요.</p>
-          <p><strong>이용권 발급</strong>: 결제 확인 후 이메일 또는 안내 채널로 UML- 형식의 이용권 코드를 발급합니다. 코드를 등록하면 이 기기 localStorage에 프리미엄 상태가 저장됩니다.</p>
-          <p><strong>환불·청약철회</strong>: 코드 발급 전 또는 미사용 확인 시 환불 가능합니다. 코드 등록 후 즉시 열람되는 디지털 콘텐츠는 단순 변심 환불이 제한될 수 있습니다. 자세한 기준은 <a href="refund.html">환불정책</a>을 확인해 주세요.</p>
-          <p><strong>연령 안내</strong>: 만 14세 미만은 가입·결제가 제한되며, 미성년자는 법정대리인 동의 후 결제해야 합니다.</p>
-          <p><strong>고객센터</strong>: <a href="mailto:ddragonjh@gmail.com">ddragonjh@gmail.com</a></p>
-        </div>
-        <p class="prem-how">결제 안내 후 전달받은 <strong>이용권 코드</strong>를 입력하면 즉시 열립니다.</p>
-        <div class="prem-redeem">
-          <input type="text" id="premCode" aria-label="프리미엄 이용권 코드" placeholder="UML-XXXXXXXXXXXXXXXXXXXXXXXX" maxlength="28" inputmode="latin" autocomplete="off" spellcheck="false">
-          <button class="btn-gold" id="premBtn">이용권 등록</button>
-        </div>
-        <p class="auth-err" id="premErr" aria-live="polite"></p>
-        <p class="tag-note">이용권 문의: <a href="mailto:ddragonjh@gmail.com">ddragonjh@gmail.com</a>로 "프리미엄"이라고 보내주세요.</p>
-      </div>`;
     return `
       <div class="r-block prem-open" id="premCompat">
-        <h3><span class="ico">💞</span> 겉궁합 · 속궁합 <span class="prem-tag">PREMIUM</span></h3>
+        <h3><span class="ico">💞</span> 겉궁합 · 속궁합 <span class="free-tag">무료</span></h3>
         <p class="content-notice small">오락·자기이해용 참고 콘텐츠이며 의료·법률·투자·진로 판단을 대체하지 않습니다.</p>
         <p class="sec-desc">상대방의 양력 생년월일을 입력하면 띠로 보는 겉궁합과 일주/오행으로 보는 속궁합을 나눠 분석합니다.</p>
         <div class="compat-form">
@@ -200,13 +175,13 @@ const PREMIUM = (() => {
         <div id="compatResult" aria-live="polite"></div>
       </div>
       <div class="r-block prem-open" id="premQuestions">
-        <h3><span class="ico">🔎</span> 프리미엄 질문 리딩 <span class="prem-tag">PREMIUM</span></h3>
+        <h3><span class="ico">🔎</span> 질문 리딩 — 재회·속마음·이직·합격 <span class="free-tag">무료</span></h3>
         <p class="content-notice small">오락·자기이해용 참고 콘텐츠이며 의료·법률·투자·진로 판단을 대체하지 않습니다.</p>
         <p class="sec-desc">재회, 속마음, 환승이별, 이직, 합격, 승진처럼 실제로 많이 묻는 질문을 점수화했습니다.</p>
         <div class="premium-question-grid">${questionCards(r)}</div>
       </div>
       <div class="r-block prem-open" id="premTiming">
-        <h3><span class="ico">⏳</span> 인생 타이밍 캘린더 <span class="prem-tag">PREMIUM</span></h3>
+        <h3><span class="ico">⏳</span> 인생 타이밍 캘린더 <span class="free-tag">무료</span></h3>
         <p class="content-notice small">오락·자기이해용 참고 콘텐츠이며 의료·법률·투자·진로 판단을 대체하지 않습니다.</p>
         <div id="timingBody"></div>
       </div>`;

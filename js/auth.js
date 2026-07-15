@@ -109,13 +109,10 @@ const MLAuth = (() => {
         <label for="suEmail">이메일</label><input type="email" id="suEmail" required placeholder="you@example.com">
         <label for="suPw">비밀번호 <small>(6자 이상)</small></label><input type="password" id="suPw" required minlength="6" placeholder="••••••">
         <div class="terms-box">
-          <label class="chk"><input type="checkbox" class="agree" id="agreeSvc" required> <span>[필수] 이용약관 동의</span></label>
-          <div class="terms-link-row"><a href="terms.html" target="_blank" rel="noopener">새 페이지</a><button type="button" data-terms="svc">모달에서 전문 보기</button></div>
-          <label class="chk"><input type="checkbox" class="agree" id="agreePriv" required> <span>[필수] 개인정보 수집·이용 동의</span></label>
-          <div class="terms-link-row"><a href="privacy.html" target="_blank" rel="noopener">새 페이지</a><button type="button" data-terms="priv">모달에서 전문 보기</button></div>
+          <label class="chk"><input type="checkbox" class="agree" id="agreeSvc" required> <span>[필수] 이용약관 동의</span> <a class="terms-link" href="terms.html" target="_blank" rel="noopener">전문 보기</a></label>
+          <label class="chk"><input type="checkbox" class="agree" id="agreePriv" required> <span>[필수] 개인정보 수집·이용 동의</span> <a class="terms-link" href="privacy.html" target="_blank" rel="noopener">전문 보기</a></label>
           <label class="chk"><input type="checkbox" class="agree" id="agreeAge" required> <span>[필수] 만 14세 이상이며, 미성년자는 유료 결제 전 법정대리인 동의가 필요함을 확인</span></label>
           <label class="chk"><input type="checkbox" class="agree" id="agreeMkt"> <span>[선택] 마케팅 정보 수신 동의</span></label>
-          <div class="terms-full hidden" id="termsFull"><h4 id="termsTitle"></h4><pre id="termsBody"></pre></div>
         </div>
         <p class="auth-err" id="suErr" aria-live="polite"></p>
         <button type="submit" class="btn-gold auth-submit">이 기기에 로컬 계정 만들기</button>
@@ -135,14 +132,6 @@ const MLAuth = (() => {
     wrap.onclick = e => { if (e.target===wrap) close(); };
     wrap.addEventListener('keydown', trapFocus);
 
-    // 약관 전문 토글
-    wrap.querySelectorAll('[data-terms]').forEach(a=>a.onclick = e=>{
-      e.preventDefault();
-      const full = wrap.querySelector('#termsFull');
-      wrap.querySelector('#termsTitle').textContent = a.dataset.terms==='svc' ? '이용약관' : '개인정보 처리방침';
-      wrap.querySelector('#termsBody').textContent = a.dataset.terms==='svc' ? TERMS_SERVICE : TERMS_PRIVACY;
-      full.classList.remove('hidden');
-    });
     // 회원가입
     wrap.querySelector('#paneSignup').onsubmit = async e => {
       e.preventDefault();

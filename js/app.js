@@ -328,6 +328,8 @@
 
       ${PREMIUM.sectionHtml(typeof MLAuth !== 'undefined' && MLAuth.isPremium(), r)}
 
+      ${typeof STAR !== 'undefined' ? STAR.sectionHtml(typeof MLAuth !== 'undefined' && MLAuth.isPremium()) : ''}
+
       ${loggedIn ? '' : `<div class="lock-cta">
         <p><strong>여기서부터는 이 기기 로컬 계정 전용 심층 해석입니다.</strong></p>
         <p class="lock-sub">결혼 시기 후보 연도 · 학업운 · 인생 4막 · 건강과 개운법 · 대운 · 세운 · 신살까지<br>로컬 계정을 만들면 이 기기에서 열람할 수 있습니다. 서버 회원가입이 아니며 정보는 내 브라우저에만 저장됩니다.</p>
@@ -348,6 +350,7 @@
     if (newReadingBtn) newReadingBtn.onclick = () => document.getElementById('reading').scrollIntoView({behavior:reduceMotion?'auto':'smooth'});
 
     PREMIUM.bind(r);
+    if (typeof STAR !== 'undefined') STAR.bind(r);
     if (typeof FORTUNE !== 'undefined') FORTUNE.bind(r);
     mountMotion($('#result'));
 

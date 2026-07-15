@@ -636,3 +636,37 @@ details p{color:var(--dim);font-size:.92rem;margin-top:10px;animation:fadeUp .28
   .r-block,.panel{border-color:#ccc;background:#fff}
   .r-block p{color:#222}
 }
+
+/* ═══════════ v7: 무료 배지 · 약관 링크 · 스타 탭 · 마스코트 ═══════════ */
+.free-tag{font-size:.65rem;letter-spacing:.02em;background:rgba(97,194,173,.15);border:1px solid #61c2ad;color:#8fe3d3;border-radius:999px;padding:3px 10px;vertical-align:middle;margin-left:8px}
+.terms-link{color:var(--gold);font-size:.76rem;text-decoration:underline;margin-left:6px;white-space:nowrap;min-height:32px;display:inline-flex;align-items:center}
+
+/* ── 스타·캐릭터 사주 ── */
+.star-badge{background:linear-gradient(135deg,#e8cf9a,#c2504f)!important;color:#1a1020!important}
+.star-sub{font-size:.9rem;color:var(--dim);font-weight:400}
+.star-legal{background:rgba(194,80,79,.10);border:1px solid rgba(194,80,79,.4);border-radius:10px;padding:10px 14px;font-size:.8rem;color:#e7cfc4;line-height:1.6;margin:10px 0 16px}
+.star-legal strong{color:#f2a99f}
+.star-tool .star-form{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}
+.star-form select,.star-form input[type=text]{background:#151829;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:11px 12px;color:var(--ink);font-size:.92rem;outline:none}
+.star-form input[type=text]{flex:1;min-width:150px}
+.star-form select:focus,.star-form input:focus{border-color:var(--gold)}
+.star-opt{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--dim);cursor:pointer}
+.star-opt input{accent-color:var(--gold)}
+.star-form .btn-gold{padding:11px 22px}
+.star-head{text-align:center;margin:6px 0 14px}
+.star-name{font-family:var(--serif);font-size:1.5rem;color:var(--gold-bright)}
+.star-cat{font-size:.85rem;background:rgba(201,168,106,.15);border:1px solid var(--gold);border-radius:999px;padding:2px 10px;margin-left:6px;vertical-align:middle;white-space:nowrap}
+.star-ilju{color:var(--dim);font-size:.9rem;margin-top:6px}
+.star-love h4,.star-fan h4{color:var(--gold-bright)}
+
+/* ── 마스코트 도담이 ── */
+.has-mascot{position:relative}
+.mascot{position:absolute;top:-14px;right:10px;z-index:3;display:flex;align-items:flex-start;gap:8px;pointer-events:none}
+.mascot-svg{filter:drop-shadow(0 6px 14px rgba(0,0,0,.35));animation:mascotFloat 4.5s ease-in-out infinite}
+@keyframes mascotFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.mascot-bubble{order:-1;align-self:center;background:var(--bg-2);border:1px solid var(--panel-line);border-radius:14px 14px 4px 14px;padding:9px 13px;font-size:.8rem;line-height:1.5;color:var(--ink);max-width:190px;box-shadow:0 6px 20px rgba(0,0,0,.3);position:relative}
+.mascot-bubble::after{content:"";position:absolute;right:-7px;bottom:12px;width:0;height:0;border:7px solid transparent;border-left-color:var(--bg-2)}
+.has-mascot .sec-title{padding-right:120px}
+@media(prefers-reduced-motion:reduce){.mascot-svg{animation:none}}
+@media(max-width:900px){.mascot-bubble{display:none}.mascot{top:-8px;right:6px}.mascot-svg{width:74px!important;height:96px!important}.has-mascot .sec-title{padding-right:70px}}
+@media(max-width:520px){.mascot-svg{width:58px!important;height:75px!important}.has-mascot .sec-title{padding-right:56px}.star-form{flex-direction:column;align-items:stretch}.star-form input[type=text],.star-form select{width:100%}}
